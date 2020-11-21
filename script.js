@@ -2,7 +2,6 @@ var coinHistory = [];
 var baseURL = "https://api.coingecko.com/api/v3";
 var coinSearchBaseURL = "https://api.coingecko.com/api/v3/coins/";
 var coinSearchEndURL = "?localization=false&tickers=false&market_data=true&community_data=true&developer_data=true";
-var queryURL = coinSearchBaseURL + coinInput + coinSearchEndURL;
 
 // error object if coinInput is not valid
 {
@@ -24,6 +23,37 @@ function coinDuplicate(coin) {
         }
     });
     return duplicate;
+}
+
+// This function dynamically creates the search history list
+function renderHistory() {
+
+    // First the list is emptied, then we loop through every coin in the coinHistory array
+    $("#coinHistory").empty();
+    coinHistory.forEach(function(searchedCoin) {
+
+        // Creating a new li element for each one and appending them to the ul in the html
+        var newCoin = $("<li>").text(searchedCoin).attr("id", searchedCoin).attr("class", "btn coin-btn list-group-item").attr("style", "text-align: left;");
+        $("#coinHistory").append(newCoin);
+    });
+
+    // Adding an event listener to each one
+    $(".coin-btn").on("click", function(event) {
+        event.preventDefault();
+
+        // Grabbing the city name
+        var coinVar3 = $(this).attr("id");
+
+        // Move the city to the top of the history
+        var indX = coinHistory.indexOf(coinVar3);
+        coinHistory.splice(indX, 1);
+        coinHistory.unshift(coinVar3);
+
+        // Render and store things
+        renderCoinData(coinVar3);
+        storeCoins();
+        renderHistory();
+    });
 }
 
 // clear the history when clicked
@@ -65,9 +95,51 @@ function renderTop10() {
 
 function renderCoinData(coinVar) {
 
-    image:
+    // empty all the things
+    $("#coinIMG").empty(), $("#coinName").empty(), $("#coinSymbol").empty(), $("#currentPrice").empty();
+    $("#projectHomepage").empty(), $("#projectDescription").empty();
+    $("#marketCap").empty(), $("#tradingVolume").empty();
+    $("#maxSupply").empty(), $("#circulatingSupply").empty();
+    $("#ATH").empty(), $("#ATHdate").empty();
+
+    var queryURL = coinSearchBaseURL + coinName + coinSearchEndURL;
+    $.ajax({url: queryURL, method: "GET"}).then(function(response) {
+        $("#coinIMG").attr("src", response.image.thumb);
+        $("#coinName").text(response.name);
+        $("#coinSymbol").text(response.symbol);
+        $("#currentPrice").text("$" + market_data.current_price.usd);
+
+        $("#projectHomepage").text(response.links.homepage[0]);
+
+        $("#projectDescription").text(response.description);
+
+        $("#marketCap").text(market_data.market_cap.usd);
+        $("#tradingVolume").text(market_data.total_volume.usd);
+
+        $("#maxSupply").text(market_data.max_supply);
+        $("#circulatingSupply").text(market_data.circulating_supply);
+
+        // 2 options for displaying ath stuff
+        $("#supply").text(market_data.max_supply + " on " + market_data.circulating_supply);
+        $("#ATH").text(market_data.ath.usd);
+        $("#ATHdate").text(market_data.ath.ath_date);
+    }
+
+
+/*     image:
         $("#coinIMG").attr("src", response.image.thumb);
         response.image.thumb/small/large
+
+    name:
+        $("#coinName").text(response.name);
+
+    symbol:
+        $("#coinSymbol").text(response.symbol);
+
+    current price:
+        $("#currentPrice").text(market_data.current_price.usd);
+        
+        market_data.current_price.(currencyID)
 
     website:
         $("#projectHomepage").text(response.links.homepage[0]);
@@ -76,11 +148,6 @@ function renderCoinData(coinVar) {
     description:
         $("#projectDescription").text(response.description);
         response.description
-
-    current price:
-        $("#currentPrice").text(market_data.current_price.usd);
-        
-        market_data.current_price.(currencyID)
     
     all time high:
         $("#ATH").text(market_data.ath.usd);
@@ -101,16 +168,45 @@ function renderCoinData(coinVar) {
 
     supply:
         $("#maxSupply").text(market_data.max_supply);
-        $("#circulatingSupply").text(market_data.circulating_supply);
+        $("#circulatingSupply").text(market_data.circulating_supply); */
 
 }
 
+// do api calls and rendering when clicked
+$("#searchButton").on("click", function(event) {
+    event.preventDefault();
+
+    // grab and format the input
+    var coinName = $("#coinSearch").val().trim().toLowerCase();
+    $("#coinSearch").empty();
+
+    var queryURL = coinSearchBaseURL + coinName + coinSearchEndURL;
+
+    // verify coin exists
+    $.ajax({url: queryURL, method: "GET"}).then(function(response) {
+        // alert user if searched coin is no good
+        if (response.error) {
+            alert(response.error + " Please try again");
+        } else {
+            // if the searched coin is already in the history, remove it
+            if (coinDuplicate(coinName) === true) {
+                var index = coinHistory.indexOf(coinName);
+                coinHistory.splice(index, 1);
+            }
+            // add searched coin to the top of the history
+            coinHistory.unshift(coinName);
+
+            // render coin data and store things
+            renderCoinData(coinName);
+            storeCoins();
+            renderHistory();
+        }
+    });
+});
+
+/* 
 timeID: 24h, 7d, 14d, 30d, 60d, 200d, 1y
 currencyID: usd, eur, gbp, btc, eth, etc...
-
-
-
-
 
 github:
     $("#projectGithub").text(response.repos_url.github[0]);
@@ -119,9 +215,6 @@ github:
 reddit:
     $("#projectSubreddit").text(response.subreddit_url);
     response.subreddit_url
-
-
-
 
 // some logic to pull the top ten
     market_cap_rank
@@ -177,4 +270,4 @@ developer data:
     developer_data.forks
     developer_data.code_additions_deletions_4_weeks.additions
     developer_data.code_additions_deletions_4_weeks.deletions
-    developer_data.commit_count_4_weeks
+    developer_data.commit_count_4_weeks */
