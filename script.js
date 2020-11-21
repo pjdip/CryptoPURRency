@@ -4,9 +4,9 @@ var coinSearchBaseURL = "https://api.coingecko.com/api/v3/coins/";
 var coinSearchEndURL = "?localization=false&tickers=false&market_data=true&community_data=true&developer_data=true";
 
 // error object if coinInput is not valid
-{
+/* {
     "error": "Could not find coin with the given id"
-}
+} */
 
 // Same storage function as previous assignments
 function storeCoins() {
@@ -70,7 +70,7 @@ function renderTop10() {
     $.ajax({url: top10URL, method: "GET"}).then(function(response) {
         for (var i = 0; i < 10; i++) {
             var newCoin = $("<li>").text(response[i].name).attr("id", response[i].name).attr("class", "top10btn");
-            $("#top10").apppend(newCoin);
+            $("#top10").append(newCoin);
         }
     });
 
@@ -102,29 +102,29 @@ function renderCoinData(coinVar) {
     $("#maxSupply").empty(), $("#circulatingSupply").empty();
     $("#ATH").empty(), $("#ATHdate").empty();
 
-    var queryURL = coinSearchBaseURL + coinName + coinSearchEndURL;
+    var queryURL = coinSearchBaseURL + coinVar + coinSearchEndURL;
     $.ajax({url: queryURL, method: "GET"}).then(function(response) {
         $("#coinIMG").attr("src", response.image.thumb);
         $("#coinName").text(response.name);
-        $("#coinSymbol").text(response.symbol);
-        $("#currentPrice").text("$" + market_data.current_price.usd);
+        $("#coinSymbol").text("(" + response.symbol + ")");
+        $("#currentPrice").text("$" + response.market_data.current_price.usd);
 
-        $("#projectHomepage").text(response.links.homepage[0]);
+        $("#projectHomepage").text(response.links.homepage[0]).attr("href", response.links.homepage[0]);
 
-        $("#projectDescription").text(response.description);
+        $("#projectDescription").text(response.description.en);
 
-        $("#marketCap").text(market_data.market_cap.usd);
-        $("#tradingVolume").text(market_data.total_volume.usd);
+        $("#marketCap").text(response.market_data.market_cap.usd);
+        $("#tradingVolume").text(response.market_data.total_volume.usd);
 
-        $("#maxSupply").text(market_data.max_supply);
-        $("#circulatingSupply").text(market_data.circulating_supply);
+        $("#maxSupply").text(response.market_data.max_supply);
+        $("#circulatingSupply").text(response.market_data.circulating_supply);
 
         // 2 options for displaying ath stuff
-        $("#supply").text(market_data.max_supply + " on " + market_data.circulating_supply);
-        $("#ATH").text(market_data.ath.usd);
-        $("#ATHdate").text(market_data.ath.ath_date);
-    }
-
+        $("#supply").text(response.market_data.max_supply + " on " + response.market_data.circulating_supply);
+        $("#ATH").text(response.market_data.ath.usd);
+        $("#ATHdate").text(response.market_data.ath.ath_date);
+    });
+}
 
 /*     image:
         $("#coinIMG").attr("src", response.image.thumb);
@@ -170,7 +170,6 @@ function renderCoinData(coinVar) {
         $("#maxSupply").text(market_data.max_supply);
         $("#circulatingSupply").text(market_data.circulating_supply); */
 
-}
 
 // do api calls and rendering when clicked
 $("#searchButton").on("click", function(event) {
@@ -271,3 +270,5 @@ developer data:
     developer_data.code_additions_deletions_4_weeks.additions
     developer_data.code_additions_deletions_4_weeks.deletions
     developer_data.commit_count_4_weeks */
+
+renderTop10();
