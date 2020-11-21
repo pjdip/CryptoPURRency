@@ -65,18 +65,52 @@ function renderTop10() {
 
 function renderCoinData(coinVar) {
 
+    image:
+        $("#coinIMG").attr("src", response.image.thumb);
+        response.image.thumb/small/large
+
+    website:
+        $("#projectHomepage").text(response.links.homepage[0]);
+        response.links.homepage[0]
+
+    description:
+        $("#projectDescription").text(response.description);
+        response.description
+
+    current price:
+        $("#currentPrice").text(market_data.current_price.usd);
+        
+        market_data.current_price.(currencyID)
+    
+    all time high:
+        $("#ATH").text(market_data.ath.usd);
+        $("#ATHdate").text(market_data.ath.ath_date);
+
+        market_data.ath.(currencyID)
+        market_data.ath_date
+
+    marketcap:
+        $("#marketCap").text(market_data.market_cap.usd);
+    
+        market_data.market_cap.currencyID
+    
+    24h volume:
+        $("#tradingVolume").text(market_data.total_volume.usd);
+
+        market_data.total_volume.currencyID
+
+    supply:
+        $("#maxSupply").text(market_data.max_supply);
+        $("#circulatingSupply").text(market_data.circulating_supply);
+
 }
 
 timeID: 24h, 7d, 14d, 30d, 60d, 200d, 1y
 currencyID: usd, eur, gbp, btc, eth, etc...
 
-image:
-    $("#coinIMG").attr("src", response.image.thumb);
-    response.image.thumb/small/large
 
-website:
-    $("#projectHomepage").text(response.links.homepage[0]);
-    response.links.homepage[0]
+
+
 
 github:
     $("#projectGithub").text(response.repos_url.github[0]);
@@ -86,9 +120,7 @@ reddit:
     $("#projectSubreddit").text(response.subreddit_url);
     response.subreddit_url
 
-description:
-    $("#projectDescription").text(response.description);
-    response.description
+
 
 
 // some logic to pull the top ten
