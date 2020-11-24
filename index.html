@@ -7,12 +7,20 @@
         <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
         <script src="https://kit.fontawesome.com/8056a67cd2.js" crossorigin="anonymous"></script>
         <title>CryptoPURRency</title>
+        <style>
+            .top10btn {
+                padding-left: 25px;
+            }
+            /* #coinIMG {
+                margin: 1;
+            } */
+        </style>
     </head>
 
     <body>
 
-        <div class="container mx-auto mb-0">
-            <nav class="bg-gray-800 inline-grid grid-cols-6 py-1">
+        <div class="container mx-auto mb-60">
+            <nav class="bg-gray-800 inline-grid rounded-lg pl-5 grid-cols-6 py-1">
                 <div class="col-span-2 mt-3">
                     <input type="text" name="" id="coinSearch" placeholder="Search" class="ml-1 mb-3 pl-3">
                     <i id="searchButton" class="fas fa-search  p-2 bg-yellow-300 transition duration-500 ease-in-out hover:bg-green-400 transform hover:-translate-y-1 hover:scale-110"></i> 
@@ -24,13 +32,16 @@
             </nav>
 
             <main class="grid grid-cols-9  min-h-screen">
-                <sidebar class="col-span-2 bg-green-400">
-                    <h2 class="text-xl font-medium leading-6 border-gray-200 mt-8 ml-2">Top 10 Coins by Market Capitalization</h2>
+                <sidebar class="col-span-2 bg-green-400 rounded-lg p-5 m-2 md:text-md">
+                    <h2 class="text-xl font-medium leading-6 border-gray-200 mt-.5 ml-2">Top 10 Coins by Market Capitalization</h2>
                     <ul id="top10"></ul>
                 </sidebar>
 
-                <section class="col-span-6 bg-purple-800">
+                <section class="col-span-6 bg-purple-800 rounded-lg m-2">
                     <table class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg ml-5 mt-5">
+                       <!-- <div class="">
+
+                       </div> -->
                         <div class="px-4 py-5 sm:px-6">
                             <img id="coinIMG" class="inline" src="https://placekitten.com/50/50" />
                             <h3 id="coinName" class="inline text-3xl mb-2 leading-6 font-medium text-gray-900"></h3>
@@ -39,7 +50,7 @@
                             <a id="projectHomepage" target="_blank" href="#" class="block max-w-2xl text-sm text-blue-400"></a>
                         </div>
 
-                        <div class="">
+                        
                             <dl>
                                 <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
@@ -70,9 +81,9 @@
                     </table>
                 </section>
 
-                <div class="col-span-1 bg-purple-800">
+                <!-- <div class="col-span-1 bg-purple-800">
 
-                </div>
+                </div> -->
             </main>
         </div>
 
