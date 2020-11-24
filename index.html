@@ -14,7 +14,7 @@
         <div class="container mx-auto mb-0">
             <nav class="bg-gray-800 inline-grid grid-cols-6 py-1">
                 <div class="col-span-2 mt-3">
-                    <input type="text" name="" id="coinSearch" placeholder="Search" class="ml-1 mb-3 pl-3">
+                    <input type="text" name="" id="coinSearch" placeholder="Search" class="ml-2 mb-3 pl-3">
                     <i id="searchButton" class="fas fa-search  p-2 bg-yellow-300 transition duration-500 ease-in-out hover:bg-green-400 transform hover:-translate-y-1 hover:scale-110"></i> 
                 </div>
 
@@ -23,14 +23,15 @@
                 </div>
             </nav>
 
-            <main class="grid grid-cols-9  min-h-screen">
+            <main class="grid grid-cols-10  min-h-screen">
+
                 <sidebar class="col-span-2 bg-green-400">
-                    <h2 class="text-xl font-medium leading-6 border-gray-200 mt-8 ml-2">Top 10 Coins by Market Capitalization</h2>
-                    <ul id="top10"></ul>
+                    <h2 class="text-xl font-medium leading-6 border-gray-200 mt-8 ml-2">Search History:</h2>
+                    <ul id="coinHistory" class="ml-2"></ul>
                 </sidebar>
 
                 <section class="col-span-6 bg-purple-800">
-                    <table class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg ml-5 mt-5">
+                    <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg mx-5 mt-5">
                         <div class="px-4 py-5 sm:px-6">
                             <img id="coinIMG" class="inline" src="https://placekitten.com/50/50" />
                             <h3 id="coinName" class="inline text-3xl mb-2 leading-6 font-medium text-gray-900"></h3>
@@ -39,7 +40,7 @@
                             <a id="projectHomepage" target="_blank" href="#" class="block max-w-2xl text-sm text-blue-400"></a>
                         </div>
 
-                        <div class="">
+                        <div>
                             <dl>
                                 <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
@@ -65,14 +66,27 @@
                                     </dt>
                                     <dd id="ATH" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
                                 </div>
+                                <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Max Supply
+                                    </dt>
+                                    <dd id="maxSupply" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                </div>
+                                <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Circulating Supply
+                                    </dt>
+                                    <dd id="circulatingSupply" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                </div>
                             </dl>
                         </div>
-                    </table>
+                    </div>
                 </section>
 
-                <div class="col-span-1 bg-purple-800">
-
-                </div>
+                <sidebar class="col-span-2 bg-green-400">
+                    <h2 class="text-xl font-medium leading-6 border-gray-200 mt-8 ml-2">Top 10 Coins by Market Capitalization:</h2>
+                    <ul id="top10" class="ml-2"></ul>
+                </sidebar>
             </main>
         </div>
 
