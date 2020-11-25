@@ -114,22 +114,25 @@ function renderCoinData(coinVar) {
         $("#coinIMG").attr("src", response.image.thumb);
         $("#coinName").text(response.name);
         $("#coinSymbol").text("(" + response.symbol + ")");
-        $("#currentPrice").text("Current Price: $" + response.market_data.current_price.usd);
+        $("#currentPrice").text("Current Price: $" + response.market_data.current_price.usd.toLocaleString());
 
         $("#projectHomepage").text(response.links.homepage[0]).attr("href", response.links.homepage[0]);
 
         $("#projectDescription").text(response.description.en);
 
-        var myNum = response.market_data.market_cap.usd;
-        console.log(myNum.ToString("N0"));
-        $("#marketCap").text(response.market_data.market_cap.usd);
-        $("#tradingVolume").text(response.market_data.total_volume.usd);
+        $("#marketCap").text("$" + response.market_data.market_cap.usd.toLocaleString());
+        $("#tradingVolume").text("$" + response.market_data.total_volume.usd.toLocaleString());
 
-        $("#maxSupply").text(response.market_data.max_supply);
-        $("#circulatingSupply").text(response.market_data.circulating_supply);
+        if (response.market_data.max_supply !== null) {
+            $("#maxSupply").text(response.market_data.max_supply.toLocaleString());
+        } else {
+            $("#maxSupply").text("maximum supply is currently undefined");
+        }
+
+        $("#circulatingSupply").text(response.market_data.circulating_supply.toLocaleString());
 
         // 2 options for displaying ath stuff
-        $("#ATH").text(response.market_data.ath.usd + " on " + response.market_data.ath_date.usd);
+        $("#ATH").text("$" + response.market_data.ath.usd.toLocaleString() + " on " + response.market_data.ath_date.usd);
 /*         $("#ATH").text(response.market_data.ath.usd);
         $("#ATHdate").text(response.market_data.ath.ath_date.usd); */
     });
@@ -185,7 +188,7 @@ $("#searchButton").on("click", function(event) {
     event.preventDefault();
 
     // grab and format the input
-    var userCoin = $("#coinSearch").val().trim().toLowerCase();
+    var userCoin = $("#coinSearch").val().trim();
     $("#coinSearch").empty();
 
     // verify coin exists
@@ -196,7 +199,12 @@ $("#searchButton").on("click", function(event) {
         for (var i = 0; i < response.length; i++) {
 
             // compare user input to the id/symbol/name of supported coins
-            if (userCoin === response[i].id || userCoin === response[i].symbol || userCoin === response[i].name) {
+            if (userCoin === response[i].id ||
+                userCoin === response[i].symbol ||
+                userCoin === response[i].name ||
+                userCoin.toLowerCase() === response[i].id ||
+                userCoin.toLowerCase() === response[i].symbol ||
+                userCoin.toLowerCase() === response[i].name) {
             
                 // if we get a match, set this variable equal to the id of the coin for searching purposes
                 coinID = response[i].id;
