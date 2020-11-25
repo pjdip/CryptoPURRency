@@ -2,6 +2,9 @@ var coinHistory = [];
 var baseURL = "https://api.coingecko.com/api/v3";
 var coinSearchBaseURL = "https://api.coingecko.com/api/v3/coins/";
 var coinSearchEndURL = "?localization=false&tickers=false&market_data=true&community_data=true&developer_data=true";
+var supportedCoinsURL = "https://api.coingecko.com/api/v3/coins/list";
+var coinID;
+var coinSupported = false;
 
 // error object if coinInput is not valid
 /* {
@@ -72,7 +75,7 @@ function renderTop10() {
     $.ajax({url: top10URL, method: "GET"}).then(function(response) {
         for (var i = 0; i < 10; i++) {
             var newCoin = $("<li>");
-            var coinButton = $("<button>").text(response[i].name).attr("id", response[i].name).attr("class", "btn top10btn list-group-item").attr("style", "text-align: left;");
+            var coinButton = $("<button>").text(response[i].name).attr("id", response[i].id).attr("class", "btn top10btn list-group-item").attr("style", "text-align: left;");
             newCoin.append(coinButton);
             $("#top10").append(newCoin);
             $(".top10btn").on("click", function(event) {
@@ -117,6 +120,8 @@ function renderCoinData(coinVar) {
 
         $("#projectDescription").text(response.description.en);
 
+        var myNum = response.market_data.market_cap.usd;
+        console.log(myNum.ToString("N0"));
         $("#marketCap").text(response.market_data.market_cap.usd);
         $("#tradingVolume").text(response.market_data.total_volume.usd);
 
@@ -180,27 +185,40 @@ $("#searchButton").on("click", function(event) {
     event.preventDefault();
 
     // grab and format the input
-    var coinName = $("#coinSearch").val().trim().toLowerCase();
+    var userCoin = $("#coinSearch").val().trim().toLowerCase();
     $("#coinSearch").empty();
 
-    var queryURL = coinSearchBaseURL + coinName + coinSearchEndURL;
-
     // verify coin exists
-    $.ajax({url: queryURL, method: "GET"}).then(function(response) {
-        // alert user if searched coin is no good
-        if (response.error) {
-            alert(response.error + " Please try again");
-        } else {
+    $.ajax({url: supportedCoinsURL, method: "GET"}).then(function(response) {
+        coinSupported = false;
+
+        // check the list of supported coins
+        for (var i = 0; i < response.length; i++) {
+
+            // compare user input to the id/symbol/name of supported coins
+            if (userCoin === response[i].id || userCoin === response[i].symbol || userCoin === response[i].name) {
+            
+                // if we get a match, set this variable equal to the id of the coin for searching purposes
+                coinID = response[i].id;
+            
+                // update this variable to note that the coin is supported
+                coinSupported = true;
+            }
+        }
+        if (coinSupported === false) {
+            alert("The searched coin is not supported by coingecko. Please try searching for another coin.")
+        } else if (coinSupported === true) {
+
             // if the searched coin is already in the history, remove it
-            if (coinDuplicate(coinName) === true) {
-                var index = coinHistory.indexOf(coinName);
+            if (coinDuplicate(coinID) === true) {
+                var index = coinHistory.indexOf(coinID);
                 coinHistory.splice(index, 1);
             }
             // add searched coin to the top of the history
-            coinHistory.unshift(coinName);
+            coinHistory.unshift(coinID);
 
             // render coin data and store things
-            renderCoinData(coinName);
+            renderCoinData(coinID);
             storeCoins();
             renderHistory();
         }
@@ -276,3 +294,9 @@ developer data:
     developer_data.commit_count_4_weeks */
 
 renderTop10();
+
+
+/* function to store portfolio in local storage
+button to store coin in portfolio
+button to remove coin from portfolio
+function to display portfolio */
