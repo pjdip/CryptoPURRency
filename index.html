@@ -12,7 +12,7 @@
     <body>
 
         <div class="container mx-auto mb-0">
-            <nav class="bg-gray-800 inline-grid grid-cols-6 py-1">
+            <nav class="bg-gray-800 inline-grid grid-cols-6 py-1 pl-3 rounded-lg" >
                 <div class="col-span-2 mt-3">
                     <input type="text" name="" id="coinSearch" placeholder="Search" class="ml-2 mb-3 pl-3">
                     <i id="searchButton" class="fas fa-search  p-2 bg-yellow-300 transition duration-500 ease-in-out hover:bg-green-400 transform hover:-translate-y-1 hover:scale-110"></i> 
@@ -25,12 +25,12 @@
 
             <main class="grid grid-cols-10  min-h-screen">
 
-                <sidebar class="col-span-2 bg-green-400">
+                <sidebar class="col-span-2 bg-green-400 rounded-lg p-5 m-2 md:text-md">
                     <h2 class="text-xl font-medium leading-6 border-gray-200 mt-8 ml-2">Search History:</h2>
                     <ul id="coinHistory" class="ml-2"></ul>
                 </sidebar>
 
-                <section class="col-span-6 bg-purple-800">
+                <section class="col-span-6 bg-purple-800 rounded-lg p-5 m-2 md:text-md">
                     <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg mx-5 mt-5">
                         <div class="px-4 py-5 sm:px-6">
                             <img id="coinIMG" class="inline" src="https://placekitten.com/50/50" />
@@ -83,7 +83,7 @@
                     </div>
                 </section>
 
-                <sidebar class="col-span-2 bg-green-400">
+                <sidebar class="col-span-2 bg-green-400 rounded-lg p-5 m-2 md:text-md">
                     <h2 class="text-xl font-medium leading-6 border-gray-200 mt-8 ml-2">Top 10 Coins by Market Capitalization:</h2>
                     <ul id="top10" class="ml-2"></ul>
                 </sidebar>
