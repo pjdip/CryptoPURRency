@@ -1,83 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+      <!--   <link href="/path/to/tailwind.css" rel="stylesheet"> -->
+        <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/8056a67cd2.js" crossorigin="anonymous"></script>
         <title>CryptoPURRency</title>
     </head>
+
     <body>
-        <header>
-            <h1 class="bg-dark text-white py-2" style="text-align: center;">This is NOT Financial Advice</h1>
-        </header>
 
-        <div class="container-fluid">
-            <div class="row">
-                <nav class="col-2 bg-light sidebar">
+        <div class="container mx-auto mb-0">
+            <nav class="bg-gray-800 grid grid-rows-2 grid-cols-1 py-2">
+                <div class="col-span-1 row-span-1">
+                    <h1 class="text-5xl text-white text-center mb-3 tracking-widest">Crypto<span class="text-purple-800">PURR</span>ency</h1>
+                </div>
 
-                    <h4>Search for a Coin:</h4>
-
-                    <form class="form-inline my-2 my-lg-0 mb-3">
-                        <input id="citySearch" class="form-control mr-sm-2" type="search" placeholder="coin name here" aria-label="Search" />
-                        <button id="searchButton" class="btn btn-outline-primary mt-2" type="submit">Search</button>
-                    </form>
-
-                    <h5 class="mt-2">Search History:</h5>
-
-                    <div class="card mt-2" style="width: 12rem;">
-                        <ul id="cityList" class="list-group list-group-flush"></ul>
+                <div class="col-span-1 row-span-1 mt-1">
+                    <div class="text-center">
+                        <input type="text" name="" id="coinSearch" placeholder="Search a Coin" class="ml-2 mb-3 pl-3">
+                        <i id="searchButton" class="fas fa-search  p-2 bg-yellow-300 transition duration-500 ease-in-out hover:bg-green-400 transform hover:-translate-y-1 hover:scale-110"></i> 
                     </div>
+                </div>
+            </nav>
 
-                    <button id="clearHistory" class="mt-2 btn btn-outline-primary">Clear History</button>
+            <main class="grid grid-cols-10  min-h-screen">
 
-                </nav>
+                <sidebar class="col-span-2 bg-green-400">
+                    <h2 class="text-xl font-medium leading-6 border-gray-200 mt-4 ml-4 mb-2">Search History:</h2>
+                    <ul id="coinHistory" class="ml-4"></ul>
+                </sidebar>
 
-                <main class="col-8">
-                    <section class="currentWeather card">
-                        <div class="card-body">
-                            <h2 class="card-title d-inline"><span id="currentCity">Search for a Cryptocurrency</span> <span id="currentDate"></span> </h2>
-                            <img id="prime" src="https://placekitten.com/75/75" class="d-inline" alt="weather conditions icon" />
-                            <p class="card-text mt-3">Current Price: <span id="temperature"></span></p>
-                            <p class="card-text">Market Capitalization: <span id="humidity"></span></p>
-                            <p class="card-text">24 hour volume: <span id="humidity"></span></p>
-                            <p class="card-text">All-time-high: <span id="windSpeed"></span></p>
-                            <p class="card-text">Project's website: <span id="humidity"></span></p>
-                            <p class="card-text">Exchange Listings: <span id="humidity"></span></p>
-                            <p class="card-text">Low-Cap Gem: <span id="humidity">Yes or No</span></p>
-                            <p class="card-text">ShitCoin: <span id="humidity">Yes or No</span></p>
-                            <p class="card-text">Wind Speed (mph): <span id="windSpeed"></span></p>
+                <section class="col-span-6 bg-purple-800">
+                    <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg mx-5 mt-5">
+                        <div class="px-4 py-5 sm:px-6">
+                            <img id="coinIMG" class="inline" src="https://placekitten.com/50/50" />
+                            <h3 id="coinName" class="inline text-3xl mb-2 leading-6 font-medium text-gray-900"></h3>
+                            <p id="coinSymbol" class="inline"></p>
+                            <p id="currentPrice" class="inline float-right"></p>
+                            <a id="projectHomepage" target="_blank" href="#" class="block max-w-2xl text-sm text-blue-400"></a>
                         </div>
-                    </section>
-                </main>
 
-                <section class="col-2">
-                    <h4>Top 10 Coins by Market Capitalization:</h4>
-
-                    <div class="card mt-2" style="width: 12rem;">
-                        <ul id="cityList" class="list-group list-group-flush">
-                            <li class="list-group-item">Dynamically</li>
-                            <li class="list-group-item">Generated</li>
-                            <li class="list-group-item">API</li>
-                            <li class="list-group-item">Collected</li>
-                            <li class="list-group-item">Coin</li>
-                            <li class="list-group-item">List</li>
-                        </ul>
+                        <div>
+                            <dl>
+                                <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        About Project
+                                    </dt>
+                                    <dd id="projectDescription" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                </div>
+                                <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Market Capitalization
+                                    </dt>
+                                    <dd id="marketCap" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                </div>
+                                <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        24-Hour Volume
+                                    </dt>
+                                    <dd id="tradingVolume" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                </div>
+                                <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        All-Time High
+                                    </dt>
+                                    <dd id="ATH" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                </div>
+                                <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Max Supply
+                                    </dt>
+                                    <dd id="maxSupply" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                </div>
+                                <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Circulating Supply
+                                    </dt>
+                                    <dd id="circulatingSupply" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                </div>
+                            </dl>
+                        </div>
                     </div>
                 </section>
-            </div>
-        </div>
 
-        <!-- Footer is given some bootstrap utility classes to make it handsome -->
-        <footer class="bg-dark text-muted text-center p-3 mt-4">
-            <h4>&copy; Made with ❤️️ by Group13</h4>
-        </footer>
+                <sidebar class="col-span-2 bg-green-400">
+                    <h2 class="text-xl font-medium leading-6 border-gray-200 mt-4 ml-4 mb-2">Top 10 Coins by Market Capitalization:</h2>
+                    <ul id="top10" class="ml-4"></ul>
+                </sidebar>
+            </main>
+        </div>
 
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-        <script src="./assets/script.js"></script>
+        <script src="./script.js"></script>
     </body>
 </html>
