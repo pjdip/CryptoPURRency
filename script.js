@@ -2,6 +2,9 @@ var coinHistory = [];
 var baseURL = "https://api.coingecko.com/api/v3";
 var coinSearchBaseURL = "https://api.coingecko.com/api/v3/coins/";
 var coinSearchEndURL = "?localization=false&tickers=false&market_data=true&community_data=true&developer_data=true";
+var supportedCoinsURL = "https://api.coingecko.com/api/v3/coins/list";
+var coinID;
+var coinSupported = false;
 
 // error object if coinInput is not valid
 /* {
@@ -33,7 +36,9 @@ function renderHistory() {
     coinHistory.forEach(function(searchedCoin) {
 
         // Creating a new li element for each one and appending them to the ul in the html
-        var newCoin = $("<li>").text(searchedCoin).attr("id", searchedCoin).attr("class", "btn coin-btn list-group-item").attr("style", "text-align: left;");
+        var newCoin = $("<li>");
+        var coinButton = $("<button>").text(searchedCoin).attr("id", searchedCoin).attr("class", "btn coin-btn list-group-item").attr("style", "text-align: left;");
+        newCoin.append(coinButton);
         $("#coinHistory").append(newCoin);
     });
 
@@ -42,7 +47,7 @@ function renderHistory() {
         event.preventDefault();
 
         // Grabbing the city name
-        var coinVar3 = $(this).attr("id");
+        var coinVar3 = $(this).attr("id").toLowerCase();
 
         // Move the city to the top of the history
         var indX = coinHistory.indexOf(coinVar3);
@@ -69,27 +74,29 @@ function renderTop10() {
     var top10URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false";
     $.ajax({url: top10URL, method: "GET"}).then(function(response) {
         for (var i = 0; i < 10; i++) {
-            var newCoin = $("<li>").text(response[i].name).attr("id", response[i].name).attr("class", "top10btn");
+            var newCoin = $("<li>");
+            var coinButton = $("<button>").text(response[i].name).attr("id", response[i].id).attr("class", "btn top10btn list-group-item").attr("style", "text-align: left;");
+            newCoin.append(coinButton);
             $("#top10").append(newCoin);
+            $(".top10btn").on("click", function(event) {
+                event.preventDefault();
+        
+                // Grabbing the coin name
+                var topCoin = $(this).attr("id").toLowerCase();
+                console.log(topCoin);
+        
+                // Move the coin to the top of the history
+                if (coinDuplicate(topCoin) === true) {
+                    var indX = coinHistory.indexOf(topCoin);
+                    coinHistory.splice(indX, 1);
+                }
+                coinHistory.unshift(topCoin);
+        
+                renderCoinData(topCoin);
+                storeCoins();
+                renderHistory();
+            });
         }
-    });
-
-    $(".top10btn").on("click", function(event) {
-        event.preventDefault();
-
-        // Grabbing the coin name
-        var topCoin = $(this).attr("id");
-
-        // Move the coin to the top of the history
-        if (coinDuplicate(topCoin) === true) {
-            var indX = coinHistory.indexOf(topCoin);
-            coinHistory.splice(indX, 1);
-        }
-        coinHistory.unshift(topCoin);
-
-        renderCoinData(topCoin);
-        storeCoins();
-        renderHistory();
     });
 }
 
@@ -107,22 +114,33 @@ function renderCoinData(coinVar) {
         $("#coinIMG").attr("src", response.image.thumb);
         $("#coinName").text(response.name);
         $("#coinSymbol").text("(" + response.symbol + ")");
-        $("#currentPrice").text("$" + response.market_data.current_price.usd);
+        $("#currentPrice").text("Current Price: $" + response.market_data.current_price.usd.toLocaleString());
 
         $("#projectHomepage").text(response.links.homepage[0]).attr("href", response.links.homepage[0]);
 
         $("#projectDescription").text(response.description.en);
 
-        $("#marketCap").text("$" + response.market_data.market_cap.usd);
-        $("#tradingVolume").text("$" + response.market_data.total_volume.usd);
 
-        $("#maxSupply").text(response.market_data.max_supply);
-        $("#circulatingSupply").text(response.market_data.circulating_supply);
+        $("#marketCap").text("$" + response.market_data.market_cap.usd.toLocaleString());
+        $("#tradingVolume").text("$" + response.market_data.total_volume.usd.toLocaleString());
 
-        // 2 options for displaying ath stuff
-        $("#supply").text(response.market_data.max_supply + " on " + response.market_data.circulating_supply);
-        $("#ATH").text( "$" + response.market_data.ath.usd);
-        $("#ATHdate").text(response.market_data.ath.ath_date);
+
+        if (response.market_data.max_supply !== null) {
+            $("#maxSupply").text(response.market_data.max_supply.toLocaleString());
+        } else {
+            $("#maxSupply").text("maximum supply is currently undefined");
+        }
+
+        $("#circulatingSupply").text(response.market_data.circulating_supply.toLocaleString());
+
+        // 2 options for displaying ath stuff<<<<<<< page-layout-updtd
+//         $("#supply").text(response.market_data.max_supply + " on " + response.market_data.circulating_supply);
+//         $("#ATH").text( "$" + response.market_data.ath.usd);
+//         $("#ATHdate").text(response.market_data.ath.ath_date);
+        $("#ATH").text("$" + response.market_data.ath.usd.toLocaleString() + " on " + response.market_data.ath_date.usd);
+/*         $("#ATH").text(response.market_data.ath.usd);
+        $("#ATHdate").text(response.market_data.ath.ath_date.usd); */
+
     });
 }
 
@@ -176,27 +194,45 @@ $("#searchButton").on("click", function(event) {
     event.preventDefault();
 
     // grab and format the input
-    var coinName = $("#coinSearch").val().trim().toLowerCase();
+    var userCoin = $("#coinSearch").val().trim();
     $("#coinSearch").empty();
 
-    var queryURL = coinSearchBaseURL + coinName + coinSearchEndURL;
-
     // verify coin exists
-    $.ajax({url: queryURL, method: "GET"}).then(function(response) {
-        // alert user if searched coin is no good
-        if (response.error) {
-            alert(response.error + " Please try again");
-        } else {
+    $.ajax({url: supportedCoinsURL, method: "GET"}).then(function(response) {
+        coinSupported = false;
+
+        // check the list of supported coins
+        for (var i = 0; i < response.length; i++) {
+
+            // compare user input to the id/symbol/name of supported coins
+            if (userCoin === response[i].id ||
+                userCoin === response[i].symbol ||
+                userCoin === response[i].name ||
+                userCoin.toLowerCase() === response[i].id ||
+                userCoin.toLowerCase() === response[i].symbol ||
+                userCoin.toLowerCase() === response[i].name) {
+            
+                // if we get a match, set this variable equal to the id of the coin for searching purposes
+                coinID = response[i].id;
+            
+                // update this variable to note that the coin is supported
+                coinSupported = true;
+            }
+        }
+        if (coinSupported === false) {
+            alert("The searched coin is not supported by coingecko. Please try searching for another coin.")
+        } else if (coinSupported === true) {
+
             // if the searched coin is already in the history, remove it
-            if (coinDuplicate(coinName) === true) {
-                var index = coinHistory.indexOf(coinName);
+            if (coinDuplicate(coinID) === true) {
+                var index = coinHistory.indexOf(coinID);
                 coinHistory.splice(index, 1);
             }
             // add searched coin to the top of the history
-            coinHistory.unshift(coinName);
+            coinHistory.unshift(coinID);
 
             // render coin data and store things
-            renderCoinData(coinName);
+            renderCoinData(coinID);
             storeCoins();
             renderHistory();
         }
@@ -272,3 +308,9 @@ developer data:
     developer_data.commit_count_4_weeks */
 
 renderTop10();
+
+
+/* function to store portfolio in local storage
+button to store coin in portfolio
+button to remove coin from portfolio
+function to display portfolio */
