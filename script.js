@@ -120,8 +120,10 @@ function renderCoinData(coinVar) {
 
         $("#projectDescription").text(response.description.en);
 
+
         $("#marketCap").text("$" + response.market_data.market_cap.usd.toLocaleString());
         $("#tradingVolume").text("$" + response.market_data.total_volume.usd.toLocaleString());
+
 
         if (response.market_data.max_supply !== null) {
             $("#maxSupply").text(response.market_data.max_supply.toLocaleString());
@@ -131,10 +133,14 @@ function renderCoinData(coinVar) {
 
         $("#circulatingSupply").text(response.market_data.circulating_supply.toLocaleString());
 
-        // 2 options for displaying ath stuff
+        // 2 options for displaying ath stuff<<<<<<< page-layout-updtd
+//         $("#supply").text(response.market_data.max_supply + " on " + response.market_data.circulating_supply);
+//         $("#ATH").text( "$" + response.market_data.ath.usd);
+//         $("#ATHdate").text(response.market_data.ath.ath_date);
         $("#ATH").text("$" + response.market_data.ath.usd.toLocaleString() + " on " + response.market_data.ath_date.usd);
 /*         $("#ATH").text(response.market_data.ath.usd);
         $("#ATHdate").text(response.market_data.ath.ath_date.usd); */
+
     });
 }
 
