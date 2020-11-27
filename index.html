@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <!--   <link href="/path/to/tailwind.css" rel="stylesheet"> -->
         <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./assets/style.css" />
         <script src="https://kit.fontawesome.com/8056a67cd2.js" crossorigin="anonymous"></script>
         <title>CryptoPURRency</title>
     </head>
@@ -12,32 +13,54 @@
     <body>
 
         <div class="container mx-auto mb-0">
-            <nav class="bg-gray-800 inline-grid grid-cols-6 py-1">
-                <div class="col-span-2 mt-3">
-                    <input type="text" name="" id="coinSearch" placeholder="Search" class="ml-2 mb-3 pl-3">
-                    <i id="searchButton" class="fas fa-search  p-2 bg-yellow-300 transition duration-500 ease-in-out hover:bg-green-400 transform hover:-translate-y-1 hover:scale-110"></i> 
-                </div>
+            <nav class="bg-gray-800 grid grid-rows-3 grid-cols-1 py-2">
 
-                <div class="col-span-54">
+                <div class="col-span-1 row-span-1">
                     <h1 class="text-5xl text-white text-center mb-3 tracking-widest">Crypto<span class="text-purple-800">PURR</span>ency</h1>
                 </div>
+
+                <div class="col-span-1 row-span-1 mt-1">
+                    <div class="text-center">
+                        <input type="text" name="" id="coinSearch" placeholder="Search a Coin" class="ml-2 mb-3 pl-3">
+                        <i id="searchButton" class="fas fa-search p-2 bg-yellow-300 transition duration-500 ease-in-out hover:bg-green-400 transform hover:-translate-y-1 hover:scale-110"></i> 
+                    </div>
+                </div>
+
+                <div class="col-span-1 row-span-1 mt-1">
+                    <div class="text-center text-white text-2xl">
+                        <button id="portfolio" class="ml-4 p-1 border border-white border-opacity-100 rounded-md">My Portfolio</button>
+                    </div>
+                </div>
+
             </nav>
 
             <main class="grid grid-cols-10  min-h-screen">
 
                 <sidebar class="col-span-2 bg-green-400">
-                    <h2 class="text-xl font-medium leading-6 border-gray-200 mt-8 ml-2">Search History:</h2>
-                    <ul id="coinHistory" class="ml-2"></ul>
+                    <h2 class="text-2xl font-medium leading-6 border-gray-200 mt-4 ml-4 mb-2">Search History:</h2>
+                    <ul id="coinHistory" class="ml-4 text-xl"></ul>
+                    <button id="clearHistory" class="ml-4 mt-2 p-1 border border-black border-opacity-100 rounded-md">Clear History</button>
                 </sidebar>
 
+                <section class="hide col-span-6 bg-purple-800">
+                    <div id="portfolioDisplay" class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg mx-5 mt-5">
+                        <div class="px-4 py-5 sm:px-6 text-center">
+                            <h4>My Portfolio</h4>
+                        </div>
+                    </div>
+                </section>
+
                 <section class="col-span-6 bg-purple-800">
-                    <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg mx-5 mt-5">
+                    <div id ="coinDataDisplay" class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg mx-5 mt-5">
                         <div class="px-4 py-5 sm:px-6">
-                            <img id="coinIMG" class="inline" src="https://placekitten.com/50/50" />
+                            <img id="coinIMG" class="inline mb-3" src="https://placekitten.com/50/50" />
                             <h3 id="coinName" class="inline text-3xl mb-2 leading-6 font-medium text-gray-900"></h3>
-                            <p id="coinSymbol" class="inline"></p>
+                            <p id="coinSymbol" class="inline">Using the search bar, search for a coin by name, coingecko ID, or ticker symbol</p>
                             <p id="currentPrice" class="inline float-right"></p>
-                            <a id="projectHomepage" target="_blank" href="#" class="block max-w-2xl text-sm text-blue-400"></a>
+                            <div class="block">
+                                <a id="projectHomepage" target="_blank" href="#" class="inline max-w-2xl text-sm text-blue-400"></a>
+                                <button id="addPortfolio"></button>
+                            </div>
                         </div>
 
                         <div>
@@ -84,8 +107,9 @@
                 </section>
 
                 <sidebar class="col-span-2 bg-green-400">
-                    <h2 class="text-xl font-medium leading-6 border-gray-200 mt-8 ml-2">Top 10 Coins by Market Capitalization:</h2>
-                    <ul id="top10" class="ml-2"></ul>
+                    <h2 class="text-2xl font-medium leading-6 border-gray-200 mt-4 ml-4">Top 10 Coins by</h2>
+                    <h2 class="text-2xl font-medium leading-6 border-gray-200 ml-4 mb-2">Market Capitalization:</h2>
+                    <ul id="top10" class="ml-4 text-xl"></ul>
                 </sidebar>
             </main>
         </div>
@@ -94,8 +118,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-        <script src="./script.js"></script>
+        <script src="./assets/script.js"></script>
     </body>
 </html>
-
-        
