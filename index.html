@@ -28,7 +28,7 @@
 
                 <div class="col-span-1 row-span-1 mt-1">
                     <div class="text-center text-white text-xl sm:text-3xl">
-                        <button id="portfolio" class="ml-4 p-1 border border-white border-opacity-100 rounded-md">My Portfolio</button>
+                        <button id="portfolio" class="p-1 border border-white border-opacity-100 rounded-md">My Portfolio:</button>
                     </div>
                 </div>
 
@@ -37,13 +37,13 @@
             <main class="grid grid-cols-10  min-h-screen">
 
                 <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:mr-2 md:text-md">
-                    <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 mt-1 sm:mt-4 ml-1 sm:ml-4 mb-2">Search History:</h2>
+                    <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 mt-1 sm:mt-4 ml-1 sm:ml-4 mb-1">Search History:</h2>
                     <ul id="coinHistory" class="ml-1 sm:ml-4 text-md md:text-lg"></ul>
                     <button id="clearHistory" class="ml-1 mr-1 sm:ml-4 sm:mr-4 mt-2 p-1 border border-black border-opacity-100 rounded-md">Clear History</button>
                 </sidebar>
 
-                <section class="hide col-span-6 bg-purple-800">
-                    <div id="portfolioDisplay" class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg mx-5 mt-5">
+                <section id="portfolioDisplay" class="hide col-span-6 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
+                    <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg m-2 sm:m-4">
                         <div class="px-4 py-5 sm:px-6 text-center">
                             <h4>My Portfolio</h4>
                             <ul id="myPortfolio"></ul>
@@ -51,17 +51,17 @@
                     </div>
                 </section>
 
-                <section class="col-span-6 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
-                    <div id ="coinDataDisplay" class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg m-2 sm:m-4">
-                        
+                <section id ="coinDataDisplay" class="col-span-6 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
+                    <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg m-2 sm:m-4">
+
                         <div class="px-4 py-5 sm:px-6">
                             <img id="coinIMG" class="inline mb-3" src="https://placekitten.com/50/50" />
                             <h3 id="coinName" class="inline text-3xl mb-2 leading-6 font-medium text-gray-900"></h3>
-                            <p id="coinSymbol" class="inline">Use the search bar to search for a coin by name, coingecko ID, or ticker symbol</p>
+                            <p id="coinSymbol" class="inline">Search for a coin by name, coingecko ID, or ticker symbol</p>
                             <p id="currentPrice" class="md:inline md:float-right"></p>
                             <div class="inline md:block">
                                 <a id="projectHomepage" target="_blank" href="#" class="inline max-w-2xl text-sm text-blue-400"></a>
-                                <button id="addPortfolio" class="float-left"></button>
+                                <button id="portfolioBtn"></button>
                             </div>
                         </div>
 
@@ -110,7 +110,7 @@
 
                 <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:ml-2">
                     <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 mt-1 sm:mt-4 ml-1 sm:ml-4">Top 10 Coins by</h2>
-                    <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 ml-1 sm:ml-4 mb-2">Market Cap:</h2>
+                    <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 ml-1 sm:ml-4 mb-1">Market Cap:</h2>
                     <ul id="top10" class="ml-1 sm:ml-4 text-md md:text-lg"></ul>
                 </sidebar>
             </main>
