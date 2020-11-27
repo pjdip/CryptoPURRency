@@ -35,6 +35,20 @@ $("#portfolio").on("click", function(event) {
     event.preventDefault();
     hide("coinDataDisplay");
     reveal("portfolioDisplay");
+    portfolio.forEach(function(portfolioCoin) {
+        // Creating a new button and li element for each coin and appending them to the ul in the html
+        var portCoin = $("<li>");
+        var coinBtn = $("<button>").text(portfolioCoin.name).attr("id", portfolioCoin.id).attr("class", "btn coin-btn list-group-item").attr("style", "text-align: left;");
+        portCoin.append(coinBtn);
+        $("#myPortfolio").append(portCoin);
+    });
+
+    // Adding an event listener to each button just created
+    $(".coin-btn").on("click", function(event) {
+        event.preventDefault();
+        var coinVar4 = new Coin($(this).text(), $(this).attr("id"));
+        updateRenderStore(coinVar4);
+    });
 });
 
 // Same storage function as previous assignments
@@ -100,10 +114,7 @@ function renderHistory() {
     // Adding an event listener to each button just created
     $(".coin-btn").on("click", function(event) {
         event.preventDefault();
-
-        // creating a new coin object
         var coinVar3 = new Coin($(this).text(), $(this).attr("id"));
-
         updateRenderStore(coinVar3);
     });
 }
@@ -130,10 +141,7 @@ function renderTop10() {
         }
         $(".top10btn").on("click", function(event) {
             event.preventDefault();
-    
-            // Grabbing the coin name
-            var topCoin = new Coin($(this).text(), $(this).attr("id"));
-    
+            var topCoin = new Coin($(this).text(), $(this).attr("id"));    
             updateRenderStore(topCoin);
         });
     });
@@ -154,7 +162,30 @@ function renderCoinData(coinVar) {
         $("#coinName").text(response.name);
         $("#coinSymbol").text("(" + response.symbol + ")");
         $("#currentPrice").text("Current Price: $" + response.market_data.current_price.usd.toLocaleString());
-        $("#addPortfolio").text("Add to Portfolio").attr("class", "inline float-right p-1 border border-black border-opacity-100 rounded-md");
+        
+        var myCoin = new Coin(response.name, response.id);
+        var indX = IndexOfArrayObject(portfolio, "id", myCoin.id);
+        if (indX !== -1) {
+            $("#addPortfolio").text("Remove from Portfolio");
+        } else {
+            $("#addPortfolio").text("Add to Portfolio");
+        }
+
+        $("#addPortfolio").attr("class", "inline float-right p-1 border border-black border-opacity-100 rounded-md");
+
+        $("#addPortfolio").on("click", function(event) {
+            event.preventDefault();
+            var indX = IndexOfArrayObject(portfolio, "id", myCoin.id);
+            if (indX !== -1) {
+                portfolio.splice(indX, 1);
+                $("#addPortfolio").text("Add to Portfolio");
+            } else {
+                portfolio.unshift(myCoin);
+                $("#addPortfolio").text("Remove from Portfolio");
+            }
+            storePortfolio();
+            console.log(portfolio);
+        });
 
         $("#projectHomepage").text(response.links.homepage[0]).attr("href", response.links.homepage[0]);
 

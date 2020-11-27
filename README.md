@@ -10,3 +10,6 @@ https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as
 ath-date manip:
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
 
+parsehtml:
+https://www.geeksforgeeks.org/jquery-parsehtml-method/
+
