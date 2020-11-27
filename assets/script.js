@@ -19,6 +19,38 @@ class Coin {
     "error": "Could not find coin with the given id"
 } */
 
+// takes an HTML element id and hides the element from the user if it is visible
+function hide(visibleID) {
+    document.getElementById(visibleID).classList.remove("reveal");
+    document.getElementById(visibleID).classList.add("hide");
+}
+
+// takes an HTML element id and reveals the element to the user if it is hidden
+function reveal(hiddenID) {
+    document.getElementById(hiddenID).classList.remove("hide");
+    document.getElementById(hiddenID).classList.add("reveal");
+}
+
+$("#portfolio").on("click", function(event) {
+    event.preventDefault();
+    hide("coinDataDisplay");
+    reveal("portfolioDisplay");
+    portfolio.forEach(function(portfolioCoin) {
+        // Creating a new button and li element for each coin and appending them to the ul in the html
+        var portCoin = $("<li>");
+        var coinBtn = $("<button>").text(portfolioCoin.name).attr("id", portfolioCoin.id).attr("class", "btn coin-btn list-group-item").attr("style", "text-align: left;");
+        portCoin.append(coinBtn);
+        $("#myPortfolio").append(portCoin);
+    });
+
+    // Adding an event listener to each button just created
+    $(".coin-btn").on("click", function(event) {
+        event.preventDefault();
+        var coinVar4 = new Coin($(this).text(), $(this).attr("id"));
+        updateRenderStore(coinVar4);
+    });
+});
+
 // Same storage function as previous assignments
 function storeCoins() {
     var stringyCoins = JSON.stringify(coinHistory);
@@ -58,6 +90,8 @@ function updateRenderStore(coinFriend) {
     coinHistory.unshift(coinFriend);
 
     // render coin data, render/store history
+    hide("portfolioDisplay");
+    reveal("coinDataDisplay");
     renderCoinData(coinFriend.id);
     storeCoins();
     renderHistory();
@@ -80,10 +114,7 @@ function renderHistory() {
     // Adding an event listener to each button just created
     $(".coin-btn").on("click", function(event) {
         event.preventDefault();
-
-        // creating a new coin object
         var coinVar3 = new Coin($(this).text(), $(this).attr("id"));
-
         updateRenderStore(coinVar3);
     });
 }
@@ -110,10 +141,7 @@ function renderTop10() {
         }
         $(".top10btn").on("click", function(event) {
             event.preventDefault();
-    
-            // Grabbing the coin name
-            var topCoin = new Coin($(this).text(), $(this).attr("id"));
-    
+            var topCoin = new Coin($(this).text(), $(this).attr("id"));    
             updateRenderStore(topCoin);
         });
     });
@@ -134,10 +162,39 @@ function renderCoinData(coinVar) {
         $("#coinName").text(response.name);
         $("#coinSymbol").text("(" + response.symbol + ")");
         $("#currentPrice").text("Current Price: $" + response.market_data.current_price.usd.toLocaleString());
+        
+        var myCoin = new Coin(response.name, response.id);
+        var indX = IndexOfArrayObject(portfolio, "id", myCoin.id);
+        if (indX !== -1) {
+            $("#addPortfolio").text("Remove from Portfolio");
+        } else {
+            $("#addPortfolio").text("Add to Portfolio");
+        }
+
+        $("#addPortfolio").attr("class", "inline float-right p-1 border border-black border-opacity-100 rounded-md");
+
+        $("#addPortfolio").on("click", function(event) {
+            event.preventDefault();
+            var indX = IndexOfArrayObject(portfolio, "id", myCoin.id);
+            if (indX !== -1) {
+                portfolio.splice(indX, 1);
+                $("#addPortfolio").text("Add to Portfolio");
+            } else {
+                portfolio.unshift(myCoin);
+                $("#addPortfolio").text("Remove from Portfolio");
+            }
+            storePortfolio();
+            console.log(portfolio);
+        });
 
         $("#projectHomepage").text(response.links.homepage[0]).attr("href", response.links.homepage[0]);
 
-        $("#projectDescription").text(response.description.en);
+        var descriptionString = response.description.en;
+        var parsedDescription = jQuery.parseHTML(descriptionString);
+        
+        parsedDescription.forEach(function(item) {
+            $("#projectDescription").append(item);
+        });
 
         $("#marketCap").text("$" + response.market_data.market_cap.usd.toLocaleString());
         $("#tradingVolume").text("$" + response.market_data.total_volume.usd.toLocaleString());
@@ -150,7 +207,7 @@ function renderCoinData(coinVar) {
 
         $("#circulatingSupply").text(response.market_data.circulating_supply.toLocaleString());
 
-        $("#ATH").text("$" + response.market_data.ath.usd.toLocaleString() + " on " + response.market_data.ath_date.usd);
+        $("#ATH").text("$" + response.market_data.ath.usd.toLocaleString() + " on " + response.market_data.ath_date.usd.slice(0, 10));
     });
 }
 
@@ -163,6 +220,7 @@ $("#searchButton").on("click", function(event) {
     $("#coinSearch").empty();
 
     // verify coin exists
+    // add this to local storage?
     $.ajax({url: supportedCoinsURL, method: "GET"}).then(function(response) {
         coinSupported = false;
 
