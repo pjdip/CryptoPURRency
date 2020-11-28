@@ -13,3 +13,6 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 parsehtml:
 https://www.geeksforgeeks.org/jquery-parsehtml-method/
 
+tree-traversal:
+https://api.jquery.com/category/traversing/tree-traversal/
+

@@ -40,65 +40,6 @@ function storePortfolio() {
     localStorage.setItem("portfolio", stringyPortfolio);
 }
 
-// Hides the coin data section and generates/displays the portfolio
-$("#portfolio").on("click", function(event) {
-    event.preventDefault();
-    hide("coinDataDisplay");
-    reveal("portfolioDisplay");
-    $("#myPortfolio").empty();
-
-    // Creating a new button and li element for each coin and appending them to the ul in the html
-    portfolio.forEach(function(portfolioCoin) {
-        var portCoin = $("<li>");
-        var coinBtn = $("<button>").text(portfolioCoin.name).attr("id", portfolioCoin.id).attr("class", "btn coin-btn list-group-item p-1 border border-black border-opacity-100 rounded-md mb-1").attr("style", "text-align: left;");
-        portCoin.append(coinBtn);
-        $("#myPortfolio").append(portCoin);
-    });
-
-    // Adding an event listener to each button just created
-    $(".coin-btn").on("click", function(event) {
-        event.preventDefault();
-        var coinVar4 = new Coin($(this).text(), $(this).attr("id"));
-        updateRenderStore(coinVar4);
-    });
-});
-
-// This function does double duty by finding the index of a pre-existing object in an array
-// or returning -1 if the object with the searched property is not already in the array
-// (like the built-in IndexOf() method)
-// It takes in an array of similar objects, a property of those objects, and a searched item
-// If the searched item is found to be equivalent to the property of one of the objects
-// the function returns the index of that object
-// If the object with the given property does not exist in the array, function return -1
-function IndexOfArrayObject(array, objProperty, searched) {
-    for(var i = 0; i < array.length; i++) {
-        if (array[i][objProperty] === searched) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-// Updates coinHistory and combines various functions that are always called together
-function updateRenderStore(coinFriend) {
-
-    // if searched coin is already in the history, remove it
-    var index = IndexOfArrayObject(coinHistory, "id", coinFriend.id);
-    if (index !== -1) {
-        coinHistory.splice(index, 1);
-    }
-
-    // add searched coin to the top of the history
-    coinHistory.unshift(coinFriend);
-
-    // render coin data, render/store history
-    hide("portfolioDisplay");
-    reveal("coinDataDisplay");
-    renderCoinData(coinFriend.id);
-    storeCoins();
-    renderHistory();
-}
-
 // This function dynamically creates the search history list
 function renderHistory() {
 
@@ -110,13 +51,6 @@ function renderHistory() {
         var coinButton = $("<button>").text(searchedCoin.name).attr("id", searchedCoin.id).attr("class", "btn coin-btn list-group-item p-1 border border-black border-opacity-100 rounded-md mb-1").attr("style", "text-align: left;");
         newCoin1.append(coinButton);
         $("#coinHistory").append(newCoin1);
-    });
-
-    // Adding an event listener to each button just created
-    $(".coin-btn").on("click", function(event) {
-        event.preventDefault();
-        var coinVar3 = new Coin($(this).text(), $(this).attr("id"));
-        updateRenderStore(coinVar3);
     });
 }
 
@@ -133,11 +67,6 @@ function renderTop10() {
             newCoin2.append(coinButton);
             $("#top10").append(newCoin2);
         }
-        $(".top10btn").on("click", function(event) {
-            event.preventDefault();
-            var topCoin = new Coin($(this).text(), $(this).attr("id"));    
-            updateRenderStore(topCoin);
-        });
     });
 }
 
@@ -156,6 +85,22 @@ function renderGifs(percent, htmlID) {
             $(htmlID).append(kittyIMG);
         });
     }
+}
+
+// This function does double duty by finding the index of a pre-existing object in an array
+// or returning -1 if the object with the searched property is not already in the array
+// (like the built-in IndexOf() method)
+// It takes in an array of similar objects, a property of those objects, and a searched item
+// If the searched item is found to be equivalent to the property of one of the objects
+// the function returns the index of that object
+// If the object with the given property does not exist in the array, function return -1
+function IndexOfArrayObject(array, objProperty, searched) {
+    for(var i = 0; i < array.length; i++) {
+        if (array[i][objProperty] === searched) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 // Takes a coingecko coin-ID and generates html from api-retreived data
@@ -181,9 +126,9 @@ function renderCoinData(coinVar) {
         var myCoin = new Coin(response.name, response.id);
         var indX = IndexOfArrayObject(portfolio, "id", myCoin.id);
         if (indX !== -1) {
-            $("#portfolioBtn").text("Remove from Portfolio").attr("class", "block md:inline md:float-right p-1 border border-black border-opacity-100 rounded-md");;
+            $("#portfolioToggle").text("Remove from Portfolio").attr("class", "block md:inline md:float-right p-1 border border-black border-opacity-100 rounded-md");;
         } else {
-            $("#portfolioBtn").text("Add to Portfolio").attr("class", "block md:inline md:float-right p-1 border border-black border-opacity-100 rounded-md");;
+            $("#portfolioToggle").text("Add to Portfolio").attr("class", "block md:inline md:float-right p-1 border border-black border-opacity-100 rounded-md");;
         }
 
         $("#projectHomepage").text(response.links.homepage[0]).attr("href", response.links.homepage[0]);
@@ -217,16 +162,77 @@ function renderCoinData(coinVar) {
     });
 }
 
-// Clear the history when clicked
-$("#clearHistory").on("click", function(event) {
-    event.preventDefault();
-    coinHistory = [];
+// Updates coinHistory and combines various functions that are always called together
+function updateRenderStore(coinFriend) {
+
+    // if searched coin is already in the history, remove it
+    var index = IndexOfArrayObject(coinHistory, "id", coinFriend.id);
+    if (index !== -1) {
+        coinHistory.splice(index, 1);
+    }
+
+    // add searched coin to the top of the history
+    coinHistory.unshift(coinFriend);
+
+    // render coin data, render/store history
+    hide("portfolioDisplay");
+    reveal("coinDataDisplay");
+    renderCoinData(coinFriend.id);
     storeCoins();
     renderHistory();
+}
+
+// grabs a random coin from the supported list and displays the data
+$("#randomCoin").on("click", function(eventems) {
+    eventems.preventDefault();
+    $.ajax({url: supportedCoinsURL, method: "GET"}).then(function(resp3) {
+        randCoinIndex = Math.floor(Math.random() * resp3.length);
+        randCoin = new Coin(resp3[randCoinIndex].name, resp3[randCoinIndex].id);
+        updateRenderStore(randCoin);
+    });
+});
+
+// Hides the coin data section and generates/displays the portfolio
+$("#displayPortfolio").on("click", function(event) {
+    event.preventDefault();
+    hide("coinDataDisplay");
+    reveal("portfolioDisplay");
+    $("#myPortfolio").empty();
+
+    // Creating a new button and li element for each coin and appending them to the ul in the html
+    portfolio.forEach(function(portfolioCoin) {
+        var portCoin = $("<li>");
+        var coinBtn = $("<button>").text(portfolioCoin.name).attr("id", portfolioCoin.id).attr("class", "btn coin-btn list-group-item p-1 border border-black border-opacity-100 rounded-md mb-1").attr("style", "text-align: left;");
+        portCoin.append(coinBtn);
+        $("#myPortfolio").append(portCoin);
+    });
+});
+
+// Event delegation for all the coin buttons :D
+$(".coinList").on("click", function(evt) {
+    evt.preventDefault();
+    if (evt.target.matches("button")) {
+        var coinVar10 = new Coin (evt.target.textContent, evt.target.getAttribute("id"));
+        updateRenderStore(coinVar10);
+    }
+});
+
+// clear history and portfolio buttons
+$(".clear").on("click", function(event) {
+    event.preventDefault();
+    if ($(this).attr("id") === "clearHistory") {
+        coinHistory = [];
+        storeCoins();
+        renderHistory();
+    } else if ($(this).attr("id") === "clearPortfolio") {
+        portfolio = [];
+        storePortfolio();
+        $("#myPortfolio").empty();
+    }
 });
 
 // Adds or removes a coin from the portfolio and adjusts the button text
-$("#portfolioBtn").on("click", function(event) {
+$("#portfolioToggle").on("click", function(event) {
     event.preventDefault();
 
     // Generate a coin object to compare to portfolio array
@@ -236,10 +242,10 @@ $("#portfolioBtn").on("click", function(event) {
     // Adjust the portfolio depending on if the coin is already in it or not
     if (indX2 !== -1) {
         portfolio.splice(indX2, 1);
-        $("#portfolioBtn").text("Add to Portfolio");
+        $("#portfolioToggle").text("Add to Portfolio");
     } else {
         portfolio.unshift(myCoin2);
-        $("#portfolioBtn").text("Remove from Portfolio");
+        $("#portfolioToggle").text("Remove from Portfolio");
     }
     storePortfolio();
 });
