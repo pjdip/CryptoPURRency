@@ -5,6 +5,9 @@ var coinSearchBaseURL = "https://api.coingecko.com/api/v3/coins/";
 var coinSearchEndURL = "?localization=false&tickers=false&market_data=true&community_data=true&developer_data=true";
 var supportedCoinsURL = "https://api.coingecko.com/api/v3/coins/list";
 var coinSupported;
+var happyGiphyURL = "https://api.giphy.com/v1/gifs/random?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=celebration%20cats&rating=pg";
+var sadGiphyURL = "https://api.giphy.com/v1/gifs/random?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=scared%20cats&rating=pg";
+
 
 // creating coin object prototype
 class Coin {
@@ -143,8 +146,25 @@ function renderTop10() {
     });
 }
 
+function renderGifs(percent, htmlID) {
+    if (percent > 0) {
+        $.ajax({url: happyGiphyURL, method: "GET"}).then(function(resp1) {
+            var kittyIMG = $("<img>");
+            kittyIMG.attr("src", resp1.data.images.fixed_height.url).attr("class", "text-center");
+            $(htmlID).append(kittyIMG);
+        });        
+    } else if (percent < 0) {
+        $.ajax({url: sadGiphyURL, method: "GET"}).then(function(resp2) {
+            var kittyIMG = $("<img>");
+            kittyIMG.attr("src", resp2.data.images.fixed_height.url).attr("class", "text-center");
+            $(htmlID).append(kittyIMG);
+        });
+    }
+}
+
 function renderCoinData(coinVar) {
 
+    var myCoin;
     // empty all the things
     $("#coinIMG").empty(), $("#coinName").empty(), $("#coinSymbol").empty(), $("#currentPrice").empty();
     $("#projectHomepage").empty(), $("#projectDescription").empty();
@@ -159,7 +179,7 @@ function renderCoinData(coinVar) {
         $("#coinSymbol").text("(" + response.symbol + ")");
         $("#currentPrice").text("Current Price: $" + response.market_data.current_price.usd.toLocaleString());
         
-        var myCoin = new Coin(response.name, response.id);
+        myCoin = new Coin(response.name, response.id);
         var indX = IndexOfArrayObject(portfolio, "id", myCoin.id);
         if (indX !== -1) {
             $("#portfolioBtn").text("Remove from Portfolio");
@@ -169,7 +189,7 @@ function renderCoinData(coinVar) {
 
         $("#portfolioBtn").attr("class", "block md:inline md:float-right p-1 border border-black border-opacity-100 rounded-md");
 
-        $("#portfolioBtn").on("click", function(event) {
+/*         $("#portfolioBtn").on("click", function(event) {
             event.preventDefault();
             var indX2 = IndexOfArrayObject(portfolio, "id", myCoin.id);
             if (indX2 !== -1) {
@@ -181,7 +201,7 @@ function renderCoinData(coinVar) {
             }
             storePortfolio();
             console.log(portfolio);
-        });
+        }); */
 
         $("#projectHomepage").text(response.links.homepage[0]).attr("href", response.links.homepage[0]);
 
@@ -195,6 +215,12 @@ function renderCoinData(coinVar) {
         $("#marketCap").text("$" + response.market_data.market_cap.usd.toLocaleString());
         $("#tradingVolume").text("$" + response.market_data.total_volume.usd.toLocaleString());
 
+        renderGifs(response.market_data.price_change_percentage_24h, "#24h");
+        renderGifs(response.market_data.price_change_percentage_30d, "#30d");
+
+        $("#24h").text(response.market_data.price_change_percentage_24h);
+        $("#30d").text(response.market_data.price_change_percentage_30d);
+
         if (response.market_data.max_supply !== null) {
             $("#maxSupply").text(response.market_data.max_supply.toLocaleString());
         } else {
@@ -204,6 +230,19 @@ function renderCoinData(coinVar) {
         $("#circulatingSupply").text(response.market_data.circulating_supply.toLocaleString());
 
         $("#ATH").text("$" + response.market_data.ath.usd.toLocaleString() + " on " + response.market_data.ath_date.usd.slice(0, 10));
+    });
+    $("#portfolioBtn").on("click", function(event) {
+        event.preventDefault();
+        var indX2 = IndexOfArrayObject(portfolio, "id", myCoin.id);
+        if (indX2 !== -1) {
+            portfolio.splice(indX2, 1);
+            $("#portfolioBtn").text("Add to Portfolio");
+        } else {
+            portfolio.unshift(myCoin);
+            $("#portfolioBtn").text("Remove from Portfolio");
+        }
+        storePortfolio();
+        console.log(portfolio);
     });
 }
 
