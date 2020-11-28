@@ -9,7 +9,7 @@ var happyGiphyURL = "https://api.giphy.com/v1/gifs/random?api_key=6Legl3aRJS1kac
 var sadGiphyURL = "https://api.giphy.com/v1/gifs/random?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=scared%20cats&rating=g";
 
 
-// creating coin object prototype
+// Creating coin object prototype
 class Coin {
     constructor(name, id) {
         this.name = name;
@@ -17,19 +17,19 @@ class Coin {
     }
 }
 
-// takes an HTML element id and hides the element from the user if it is visible
+// Takes an HTML element id and HIDES the element from the user if it is visible
 function hide(visibleID) {
     document.getElementById(visibleID).classList.remove("reveal");
     document.getElementById(visibleID).classList.add("hide");
 }
 
-// takes an HTML element id and reveals the element to the user if it is hidden
+// Takes an HTML element id and REVEALS the element to the user if it is hidden
 function reveal(hiddenID) {
     document.getElementById(hiddenID).classList.remove("hide");
     document.getElementById(hiddenID).classList.add("reveal");
 }
 
-// Same storage function as previous assignments
+// Simple storage functions
 function storeCoins() {
     var stringyCoins = JSON.stringify(coinHistory);
     localStorage.setItem("coins", stringyCoins);
@@ -40,13 +40,15 @@ function storePortfolio() {
     localStorage.setItem("portfolio", stringyPortfolio);
 }
 
+// Hides the coin data section and generates/displays the portfolio
 $("#portfolio").on("click", function(event) {
     event.preventDefault();
     hide("coinDataDisplay");
     reveal("portfolioDisplay");
     $("#myPortfolio").empty();
+
+    // Creating a new button and li element for each coin and appending them to the ul in the html
     portfolio.forEach(function(portfolioCoin) {
-        // Creating a new button and li element for each coin and appending them to the ul in the html
         var portCoin = $("<li>");
         var coinBtn = $("<button>").text(portfolioCoin.name).attr("id", portfolioCoin.id).attr("class", "btn coin-btn list-group-item p-1 border border-black border-opacity-100 rounded-md mb-1").attr("style", "text-align: left;");
         portCoin.append(coinBtn);
@@ -64,7 +66,7 @@ $("#portfolio").on("click", function(event) {
 // This function does double duty by finding the index of a pre-existing object in an array
 // or returning -1 if the object with the searched property is not already in the array
 // (like the built-in IndexOf() method)
-// It takes in an array of similar objects, a property of those objects, and a searched item to be compared
+// It takes in an array of similar objects, a property of those objects, and a searched item
 // If the searched item is found to be equivalent to the property of one of the objects
 // the function returns the index of that object
 // If the object with the given property does not exist in the array, function return -1
@@ -77,6 +79,7 @@ function IndexOfArrayObject(array, objProperty, searched) {
     return -1;
 }
 
+// Updates coinHistory and combines various functions that are always called together
 function updateRenderStore(coinFriend) {
 
     // if searched coin is already in the history, remove it
@@ -99,11 +102,10 @@ function updateRenderStore(coinFriend) {
 // This function dynamically creates the search history list
 function renderHistory() {
 
-    // First the html list is emptied, then we loop through every coin in the coinHistory array
     $("#coinHistory").empty();
-    coinHistory.forEach(function(searchedCoin) {
 
-        // Creating a new button and li element for each coin and appending them to the ul in the html
+    // Creating a new button and li element for each coin and appending them to the ul in the html
+    coinHistory.forEach(function(searchedCoin) {
         var newCoin1 = $("<li>");
         var coinButton = $("<button>").text(searchedCoin.name).attr("id", searchedCoin.id).attr("class", "btn coin-btn list-group-item p-1 border border-black border-opacity-100 rounded-md mb-1").attr("style", "text-align: left;");
         newCoin1.append(coinButton);
@@ -118,20 +120,13 @@ function renderHistory() {
     });
 }
 
-// clear the history when clicked
-$("#clearHistory").on("click", function(event) {
-    event.preventDefault();
-    coinHistory = [];
-    storeCoins();
-    renderHistory();
-});
-
-// this function makes an api call to get the top 10 coins by market cap
-// then dynamically generates html 
+// Makes an api call to get the top 10 coins by market cap, then dynamically generates html 
 function renderTop10() {
     $("#top10").empty();
     var top10URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false";
     $.ajax({url: top10URL, method: "GET"}).then(function(response) {
+
+        // loop through the 10 requested coins
         for (var i = 0; i < 10; i++) {
             var newCoin2 = $("<li>");
             var coinButton = $("<button>").text(response[i].name).attr("id", response[i].id).attr("class", "btn top10btn list-group-item p-1 border border-black border-opacity-100 rounded-md mb-1").attr("style", "text-align: left;");
@@ -146,6 +141,7 @@ function renderTop10() {
     });
 }
 
+// Generates a gif based on percent change of a coin and appends to provided html element ID
 function renderGifs(percent, htmlID) {
     if (percent > 0) {
         $.ajax({url: happyGiphyURL, method: "GET"}).then(function(resp1) {
@@ -162,49 +158,37 @@ function renderGifs(percent, htmlID) {
     }
 }
 
+// Takes a coingecko coin-ID and generates html from api-retreived data
 function renderCoinData(coinVar) {
 
-    var myCoin;
-    // empty all the things
-    $("#coinIMG").empty(), $("#coinName").empty(), $("#coinSymbol").empty(), $("#currentPrice").empty();
+    // Empty all the things
+    $("#coinIMG").empty(), $("#coinName").empty();
+    $("#coinSymbol").empty(), $("#currentPrice").empty();
     $("#projectHomepage").empty(), $("#projectDescription").empty();
     $("#marketCap").empty(), $("#tradingVolume").empty();
     $("#maxSupply").empty(), $("#circulatingSupply").empty();
     $("#ATH").empty(), $("#ATHdate").empty();
 
+    // Create queryURL and make ajax call to generate lots of things
     var queryURL = coinSearchBaseURL + coinVar + coinSearchEndURL;
     $.ajax({url: queryURL, method: "GET"}).then(function(response) {
         $("#coinIMG").attr("src", response.image.thumb);
-        $("#coinName").text(response.name);
+        $("#coinName").text(response.name).attr("data-coinID", response.id);
         $("#coinSymbol").text("(" + response.symbol + ")");
         $("#currentPrice").text("Current Price: $" + response.market_data.current_price.usd.toLocaleString());
-        
-        myCoin = new Coin(response.name, response.id);
+
+        // Check if a coin is in the portfolio to adjust portfolio text
+        var myCoin = new Coin(response.name, response.id);
         var indX = IndexOfArrayObject(portfolio, "id", myCoin.id);
         if (indX !== -1) {
-            $("#portfolioBtn").text("Remove from Portfolio");
+            $("#portfolioBtn").text("Remove from Portfolio").attr("class", "block md:inline md:float-right p-1 border border-black border-opacity-100 rounded-md");;
         } else {
-            $("#portfolioBtn").text("Add to Portfolio");
+            $("#portfolioBtn").text("Add to Portfolio").attr("class", "block md:inline md:float-right p-1 border border-black border-opacity-100 rounded-md");;
         }
-
-        $("#portfolioBtn").attr("class", "block md:inline md:float-right p-1 border border-black border-opacity-100 rounded-md");
-
-/*         $("#portfolioBtn").on("click", function(event) {
-            event.preventDefault();
-            var indX2 = IndexOfArrayObject(portfolio, "id", myCoin.id);
-            if (indX2 !== -1) {
-                portfolio.splice(indX2, 1);
-                $("#portfolioBtn").text("Add to Portfolio");
-            } else {
-                portfolio.unshift(myCoin);
-                $("#portfolioBtn").text("Remove from Portfolio");
-            }
-            storePortfolio();
-            console.log(portfolio);
-        }); */
 
         $("#projectHomepage").text(response.links.homepage[0]).attr("href", response.links.homepage[0]);
 
+        // Parse the description string and then append it to the html
         var descriptionString = response.description.en;
         var parsedDescription = jQuery.parseHTML(descriptionString);
         
@@ -221,6 +205,7 @@ function renderCoinData(coinVar) {
         $("#24h").text(response.market_data.price_change_percentage_24h);
         $("#30d").text(response.market_data.price_change_percentage_30d);
 
+        // Some coins do not have a maximum supply, check if this is the case or not
         if (response.market_data.max_supply !== null) {
             $("#maxSupply").text(response.market_data.max_supply.toLocaleString());
         } else {
@@ -228,41 +213,54 @@ function renderCoinData(coinVar) {
         }
 
         $("#circulatingSupply").text(response.market_data.circulating_supply.toLocaleString());
-
         $("#ATH").text("$" + response.market_data.ath.usd.toLocaleString() + " on " + response.market_data.ath_date.usd.slice(0, 10));
-    });
-    $("#portfolioBtn").on("click", function(event) {
-        event.preventDefault();
-        var indX2 = IndexOfArrayObject(portfolio, "id", myCoin.id);
-        if (indX2 !== -1) {
-            portfolio.splice(indX2, 1);
-            $("#portfolioBtn").text("Add to Portfolio");
-        } else {
-            portfolio.unshift(myCoin);
-            $("#portfolioBtn").text("Remove from Portfolio");
-        }
-        storePortfolio();
-        console.log(portfolio);
     });
 }
 
-// do api calls and rendering when clicked
+// Clear the history when clicked
+$("#clearHistory").on("click", function(event) {
+    event.preventDefault();
+    coinHistory = [];
+    storeCoins();
+    renderHistory();
+});
+
+// Adds or removes a coin from the portfolio and adjusts the button text
+$("#portfolioBtn").on("click", function(event) {
+    event.preventDefault();
+
+    // Generate a coin object to compare to portfolio array
+    var myCoin2 = new Coin($(this).parent().prev().prev().prev().text(), $(this).parent().prev().prev().prev().attr("data-coinID"));
+    var indX2 = IndexOfArrayObject(portfolio, "id", myCoin2.id);
+
+    // Adjust the portfolio depending on if the coin is already in it or not
+    if (indX2 !== -1) {
+        portfolio.splice(indX2, 1);
+        $("#portfolioBtn").text("Add to Portfolio");
+    } else {
+        portfolio.unshift(myCoin2);
+        $("#portfolioBtn").text("Remove from Portfolio");
+    }
+    storePortfolio();
+});
+
+// Api calls and rendering when clicked
 $("#searchButton").on("click", function(event) {
     event.preventDefault();
 
-    // grab and format the input
+    // Grab and format the input
     var userCoin = $("#coinSearch").val().trim();
     $("#coinSearch").empty();
 
-    // verify coin exists
+    // Verify coin exists
     // add this to local storage?
     $.ajax({url: supportedCoinsURL, method: "GET"}).then(function(response) {
         coinSupported = false;
 
-        // check the list of supported coins
+        // Check the list of supported coins
         for (var i = 0; i < response.length; i++) {
 
-            // compare user input to the id/symbol/name of supported coins
+            // Compare user input to the id/symbol/name of supported coins
             if (userCoin === response[i].id ||
                 userCoin === response[i].symbol ||
                 userCoin === response[i].name ||
@@ -270,13 +268,15 @@ $("#searchButton").on("click", function(event) {
                 userCoin.toLowerCase() === response[i].symbol ||
                 userCoin.toLowerCase() === response[i].name) {
             
-                // if we get a match, create new coin object with response data
+                // If we get a match, create new coin object with response data
                 var newCoin = new Coin(response[i].name, response[i].id);
             
-                // update this variable to note that the coin is supported
+                // Update this variable to note that the coin is supported
                 coinSupported = true;
             }
         }
+
+        // Alert the user to search again or process the search if it is supported
         if (coinSupported === false) {
             alert("The searched coin is not supported by coingecko. Please try searching for another coin.")
         } else if (coinSupported === true) {
@@ -285,6 +285,7 @@ $("#searchButton").on("click", function(event) {
     });
 });
 
+// Retrieve coinHistory and portfolio from local storage
 var retrievedCoins = localStorage.getItem("coins");
 if (retrievedCoins !== null) {
     coinHistory = JSON.parse(retrievedCoins);
