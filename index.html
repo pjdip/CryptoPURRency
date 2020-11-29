@@ -49,7 +49,7 @@
 
                 <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:mr-2 md:text-md">
                     <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 mt-1 sm:mt-4 ml-1 sm:ml-4 mb-1">Search History:</h2>
-                    <ul id="coinHistory" class="coinList px-1 sm:mx-4 text-md md:text-lg"></ul>
+                    <ul id="coinHistory" class="coinList mx-1 sm:mx-4 text-md md:text-lg"></ul>
                     <button id="clearHistory" class="clear ml-1 mr-1 sm:ml-4 sm:mr-4 mt-2 p-1 border border-black border-opacity-100 rounded-md">Clear History</button>
                 </sidebar>
 
@@ -85,43 +85,67 @@
                                     </dt>
                                     <dd id="projectDescription" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
                                 </div>
+
                                 <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
                                         Market Capitalization
                                     </dt>
                                     <dd id="marketCap" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
                                 </div>
+                                
                                 <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
                                         24-Hour Volume
                                     </dt>
                                     <dd id="tradingVolume" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
                                 </div>
+                                
                                 <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
                                         Percent Change in 24 hours
                                     </dt>
                                     <dd id="24h" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                    <canvas id="myChart24h" class="hide"></canvas>
                                 </div>
+                                
                                 <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
                                         Percent Change in 30 days
                                     </dt>
                                     <dd id="30d" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
-                                    <canvas id="myChart"></canvas>
+                                    <canvas id="myChart30d" class="hide"></canvas>
                                 </div>
+                                
+                                <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Percent Change in 200 days
+                                    </dt>
+                                    <dd id="200d" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                    <canvas id="myChart200d" class="hide"></canvas>
+                                </div>
+                                
+                                <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Percent Change in 1 year
+                                    </dt>
+                                    <dd id="1y" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                    <canvas id="myChart1y" class="hide"></canvas>
+                                </div>
+                                
                                 <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
                                         All-Time High
                                     </dt>
                                     <dd id="ATH" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
                                 </div>
+                                
                                 <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
                                         Max Supply
                                     </dt>
                                     <dd id="maxSupply" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
                                 </div>
+                                
                                 <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
                                         Circulating Supply
@@ -136,7 +160,7 @@
                 <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:ml-2">
                     <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 mt-1 sm:mt-4 ml-1 sm:ml-4">Top 10 Coins by</h2>
                     <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 ml-1 sm:ml-4 mb-1">Market Cap:</h2>
-                    <ul id="top10" class="coinList px-1 sm:mx-4 text-md md:text-lg"></ul>
+                    <ul id="top10" class="coinList mx-1 sm:mx-4 text-md md:text-lg"></ul>
                 </sidebar>
             </main>
 
