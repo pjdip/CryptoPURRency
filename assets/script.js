@@ -3,6 +3,7 @@ var portfolio = [];
 var baseURL = "https://api.coingecko.com/api/v3";
 var coinSearchBaseURL = "https://api.coingecko.com/api/v3/coins/";
 var coinSearchEndURL = "?localization=false&tickers=false&market_data=true&community_data=true&developer_data=true";
+var priceEndURL30d = "/market_chart?vs_currency=usd&days=30&interval=daily";
 var supportedCoinsURL = "https://api.coingecko.com/api/v3/coins/list";
 var coinSupported;
 var happyGiphyURL = "https://api.giphy.com/v1/gifs/random?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=celebration%20cats&rating=g";
@@ -159,6 +160,35 @@ function renderCoinData(coinVar) {
 
         $("#circulatingSupply").text(response.market_data.circulating_supply.toLocaleString());
         $("#ATH").text("$" + response.market_data.ath.usd.toLocaleString() + " on " + response.market_data.ath_date.usd.slice(0, 10));
+    });
+    var graphURL = coinSearchBaseURL + coinVar + priceEndURL30d;
+    $.ajax({url: graphURL, method: "GET"}).then(function(response2) {
+        var prices1 = [];
+        var days = [];
+        for (var j = 0; j < response2.prices.length; j++) {
+            days.push(j);
+            prices1.push(response2.prices[j][1].toFixed(4));
+        }
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: days,
+                datasets: [{
+                    label: 'My First dataset',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: prices1
+                }]
+            },
+
+            // Configuration options go here
+            options: {}
+        });
     });
 }
 

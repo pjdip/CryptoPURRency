@@ -34,8 +34,6 @@ $.ajax({url: qURL, method: "GET"}).then(function(resp1) {
         lowY += increment;
         yAxis.push(lowY);
     }
-}).then(function() {
-
     const ctx = document.getElementById('chart').getContext('2d');
     const chart = new Chart(ctx, {
         type: 'line',
@@ -48,8 +46,11 @@ $.ajax({url: qURL, method: "GET"}).then(function(resp1) {
             labels: yAxis
         }
     });
+})
+/* .then(function() {
 
-/*     var chartJsURL = `https://image-charts.com/chart.js/2.8.0?bkg=white&c=${chartJS}`; */
+
+
     var chartJsURL = `https://image-charts.com/chart.js/2.8.0?bkg=white&c={type:"line",data:{labels:${yAxis},datasets:[{${prices1}}]}}`;
     var chartJsURL1 = "https://image-charts.com/chart.js/2.8.0?bkg=white&c={type:'line',data:{labels:${yAxis},datasets:[{data:${prices1}}]}}";
 
@@ -66,7 +67,7 @@ $.ajax({url: qURL, method: "GET"}).then(function(resp1) {
     });
     gURL = gBase1 + graphEnd;
     console.log(gURL);
-});
+}); */
 
 
 /* //Event listener for button
