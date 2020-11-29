@@ -146,9 +146,13 @@ function renderCoinData(coinVar) {
 
         renderGifs(response.market_data.price_change_percentage_24h, "#24h");
         renderGifs(response.market_data.price_change_percentage_30d, "#30d");
+        renderGifs(response.market_data.price_change_percentage_200d, "#200d");
+        renderGifs(response.market_data.price_change_percentage_1y, "#1y");
 
         $("#24h").text(response.market_data.price_change_percentage_24h);
         $("#30d").text(response.market_data.price_change_percentage_30d);
+        $("#200d").text(response.market_data.price_change_percentage_200d);
+        $("#1y").text(response.market_data.price_change_percentage_1y);
 
         // Some coins do not have a maximum supply, check if this is the case or not
         if (response.market_data.max_supply !== null) {
@@ -160,6 +164,53 @@ function renderCoinData(coinVar) {
         $("#circulatingSupply").text(response.market_data.circulating_supply.toLocaleString());
         $("#ATH").text("$" + response.market_data.ath.usd.toLocaleString() + " on " + response.market_data.ath_date.usd.slice(0, 10));
     });
+
+    /*     renderGraph(priceURL(coinVar, 1, "hourly"), "24h"); */
+    renderGraph(priceURL(coinVar, 30, "daily"), "30d");
+    renderGraph(priceURL(coinVar, 200, "daily"), "200d");
+    renderGraph(priceURL(coinVar, 365, "daily"), "1y");
+
+}
+
+function renderGraph(URL, range) {
+    var chartID = "myChart" + range;
+    var graphLabel = range + " Price Chart";
+
+    $.ajax({url: URL, method: "GET"}).then(function(response) {
+        var prices = [];
+        var interval = [];
+        for (var j = 0; j < response.prices.length; j++) {
+            interval.push(j);
+            prices.push(response.prices[j][1].toFixed(4));
+        }
+
+        reveal(range);
+        var ctx = document.getElementById(chartID).getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: interval,
+                datasets: [{
+                    label: graphLabel,
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: prices
+                }]
+            },
+
+            // Configuration options go here
+            options: {}
+        });
+    });
+}
+
+function priceURL(ID, days, interval) {
+    var graphDays = "/market_chart?vs_currency=usd&days=" + days;
+    var graphInterval = "&interval=" + interval;
+    return coinSearchBaseURL + ID + graphDays + graphInterval;
 }
 
 // Updates coinHistory and combines various functions that are always called together
