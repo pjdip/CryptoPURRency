@@ -227,6 +227,7 @@ function updateRenderStore(coinFriend) {
 
     // render coin data, render/store history
     hide("portfolioDisplay");
+    hide("topDisplay");
     reveal("coinDataDisplay");
     renderCoinData(coinFriend.id);
     storeCoins();
@@ -247,17 +248,101 @@ $("#randomCoin").on("click", function(eventems) {
 $("#displayPortfolio").on("click", function(event) {
     event.preventDefault();
     hide("coinDataDisplay");
+    hide("topDisplay");
     reveal("portfolioDisplay");
-    $("#myPortfolio").empty();
+    $("#portBody").empty();
 
     // Creating a new button and li element for each coin and appending them to the ul in the html
     portfolio.forEach(function(portfolioCoin) {
-        var portCoin = $("<li>");
-        var coinBtn = $("<button>").text(portfolioCoin.name).attr("id", portfolioCoin.id).attr("class", "btn coin-btn list-group-item p-1 border border-black border-opacity-100 rounded-md mb-1").attr("style", "text-align: left;");
-        portCoin.append(coinBtn);
-        $("#myPortfolio").append(portCoin);
+        var tableRow = $("<tr>");
+        var dataName = $("<td>");
+        var dataPrice = $("<td>");
+        var delta1h = $("<td>");
+        var delta24h = $("<td>");
+        var delta7d = $("<td>");
+
+        var qURL = coinSearchBaseURL + portfolioCoin.id + coinSearchEndURL;
+        $.ajax({url: qURL, method: "GET"}).then(function(response) {
+            var coinBtn = $("<button>").text(response.name).attr("id", response.id).attr("class", "btn list-group-item p-1 border border-black border-opacity-100 rounded-md mb-1");
+            dataName.append(coinBtn);
+            dataPrice.text("$" + response.market_data.current_price.usd.toLocaleString());
+            delta1h.text(response.market_data.price_change_percentage_1h_in_currency.usd.toFixed(1).toLocaleString() + "%");
+            delta24h.text(response.market_data.price_change_percentage_24h_in_currency.usd.toFixed(1).toLocaleString() + "%");
+            delta7d.text(response.market_data.price_change_percentage_7d_in_currency.usd.toFixed(1).toLocaleString() + "%");
+
+            percentColor(response.market_data.price_change_percentage_1h_in_currency.usd, delta1h);
+            percentColor(response.market_data.price_change_percentage_24h_in_currency.usd, delta24h);
+            percentColor(response.market_data.price_change_percentage_7d_in_currency.usd, delta7d);
+
+            tableRow.append(dataName);
+            tableRow.append(dataPrice);
+            tableRow.append(delta1h);
+            tableRow.append(delta24h);
+            tableRow.append(delta7d);
+            $("#portBody").append(tableRow);
+        });
     });
 });
+
+function renderTop() {
+    $("#topBody").empty();
+    var top10URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=25&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d";
+    $.ajax({url: top10URL, method: "GET"}).then(function(response) {
+        // loop through the 10 requested coins
+        for (var i = 0; i < 25; i++) {
+            var tableRow = $("<tr>").attr("class", "flex flex-col flex-no wrap sm:table-row");
+            var dataName = $("<td>");
+            var dataPrice = $("<td>");
+            var delta1h = $("<td>");
+            var delta24h = $("<td>");
+            var delta7d = $("<td>");
+            var vol = $("<td>");
+            var mktCap = $("<td>");
+            var coinImg = $("<img>");
+
+            coinImg.attr("src", response[i].image).attr("style", "width: 20%; margin-right: 1px; margin-left: 15%; display: inline; float: left;");
+            var coinBtn = $("<button>").text(response[i].name).attr("id", response[i].id).attr("class", "btn list-group-item p-1 border border-black border-opacity-100 rounded-md mb-1").attr("style", "float: left;");
+            dataName.append(coinImg);
+            dataName.append(coinBtn);
+            dataPrice.text("$" + response[i].current_price.toLocaleString());
+            delta1h.text(response[i].price_change_percentage_1h_in_currency.toFixed(1).toLocaleString() + "%");
+            delta24h.text(response[i].price_change_percentage_24h_in_currency.toFixed(1).toLocaleString() + "%");
+            delta7d.text(response[i].price_change_percentage_7d_in_currency.toFixed(1).toLocaleString() + "%");
+            vol.text("$" + response[i].total_volume.toLocaleString());
+            mktCap.text("$" + response[i].market_cap.toLocaleString());
+
+            percentColor(response[i].price_change_percentage_1h_in_currency, delta1h);
+            percentColor(response[i].price_change_percentage_24h_in_currency, delta24h);
+            percentColor(response[i].price_change_percentage_7d_in_currency, delta7d);
+
+            tableRow.append(dataName);
+            tableRow.append(dataPrice);
+            tableRow.append(delta1h);
+            tableRow.append(delta24h);
+            tableRow.append(delta7d);
+            tableRow.append(vol);
+            tableRow.append(mktCap);
+
+            $("#topBody").append(tableRow);
+        }
+    });
+}
+
+$(".coinTable").on("click", function(evnt) {
+    evnt.preventDefault();        
+    if (evnt.target.matches("button")) {
+        var coinVar13 = new Coin (evnt.target.textContent, evnt.target.getAttribute("id"));
+        updateRenderStore(coinVar13);
+    }
+});
+
+function percentColor(percent, elem) {
+    if (percent > 0) {
+        elem.attr("style", "color: green;")
+    } else if (percent < 0) {
+        elem.attr("style", "color: red;")
+    }
+}
 
 // Event delegation for all the coin buttons :D
 $(".coinList").on("click", function(evt) {
@@ -278,7 +363,7 @@ $(".clear").on("click", function(event) {
     } else if ($(this).attr("id") === "clearPortfolio") {
         portfolio = [];
         storePortfolio();
-        $("#myPortfolio").empty();
+        $("#portBody").empty();        
     }
 });
 
@@ -353,8 +438,9 @@ if (retrievedPortfolio !== null) {
     portfolio = JSON.parse(retrievedPortfolio);
 }
 
-renderTop10();
+/* renderTop10(); */
 renderHistory();
+renderTop();
 
 /* 
 timeID: 24h, 7d, 14d, 30d, 60d, 200d, 1y
