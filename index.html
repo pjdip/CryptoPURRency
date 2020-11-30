@@ -19,7 +19,9 @@
                 <div class="col-span-1 row-span-1">
                     <h1 class="text-3xl sm:text-5xl text-white text-center mb-3 tracking-widest">
                         <img class="inline mb-3" src="https://placekitten.com/50/50" />
-                        Crypto<span class="text-purple-800">PURR</span>ency
+                        <a href="./index.html">
+                            Crypto<span class="text-purple-800">PURR</span>ency
+                        </a>
                         <img class="inline mb-3" src="https://placekitten.com/50/50" />
                     </h1>
                 </div>
@@ -47,23 +49,35 @@
 
             <main class="grid grid-cols-10  min-h-screen">
 
-                <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:mr-2 md:text-md">
+                <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:mr-2 sm:text-md">
                     <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 mt-1 sm:mt-4 ml-1 sm:ml-4 mb-1">Search History:</h2>
-                    <ul id="coinHistory" class="coinList mx-1 sm:mx-4 text-md md:text-lg"></ul>
+                    <ul id="coinHistory" class="coinList mx-1 sm:mx-4 text-md sm:text-lg"></ul>
                     <button id="clearHistory" class="clear ml-1 mr-1 sm:ml-4 sm:mr-4 mt-2 p-1 border border-black border-opacity-100 rounded-md">Clear History</button>
                 </sidebar>
 
-                <section id="portfolioDisplay" class="hide col-span-6 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
+                <section id="portfolioDisplay" class="hide col-span-8 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
                     <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg m-2 sm:m-4">
                         <div class="px-4 py-5 sm:px-6 text-center">
                             <h4 class="mb-1 text-lg sm:text-xl">My Portfolio:</h4>
-                            <ul id="myPortfolio" class="coinList"></ul>
+                            <table id="portTable" class="coinTable text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
+                                <thead>
+                                  <tr>
+                                    <th class="w-2/12 ...">Coin</th>
+                                    <th class="w-2/12 ...">Price</th>
+                                    <th class="w-2/12 ...">1h</th>
+                                    <th class="w-2/12 ...">24h</th>
+                                    <th class="w-2/12 ...">7d</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="portBody">
+                                </tbody>
+                              </table>
                             <button id="clearPortfolio" class="clear text-center text-md sm:text-lg p-1 border border-black border-opacity-100 rounded-md">Clear Portfolio</button>
                         </div>
                     </div>
                 </section>
 
-                <section id ="coinDataDisplay" class="col-span-6 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
+                <section id ="coinDataDisplay" class="hide col-span-8 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
                     <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg m-2 sm:m-4">
 
                         <div class="px-4 py-5 sm:px-6">
@@ -157,15 +171,35 @@
                     </div>
                 </section>
 
-                <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:ml-2">
+                <section id ="topDisplay" class="col-span-8 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
+                    <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg m-2 sm:m-4">
+                        <table id="topTable" class="coinTable text-center text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
+                            <thead>
+                              <tr>
+                                <th class="w-1/6 ...">Coin</th>
+                                <th class="w-1/6 ...">Price</th>
+                                <th class="w-1/12 ...">1h</th>
+                                <th class="w-1/12 ...">24h</th>
+                                <th class="w-1/12 ...">7d</th>
+                                <th class="w-1/4 ...">24h Volume</th>
+                                <th class="w-1/4 ...">Market Cap</th>
+                              </tr>
+                            </thead>
+                            <tbody id="topBody">
+                            </tbody>
+                          </table>
+                    </div>
+                </section>
+
+<!--                 <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:ml-2">
                     <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 mt-1 sm:mt-4 ml-1 sm:ml-4">Top 10 Coins by</h2>
                     <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 ml-1 sm:ml-4 mb-1">Market Cap:</h2>
-                    <ul id="top10" class="coinList mx-1 sm:mx-4 text-md md:text-lg"></ul>
-                </sidebar>
+                    <ul id="top10" class="coinList mx-1 sm:mx-4 text-md sm:text-lg"></ul>
+                </sidebar> -->
             </main>
 
             <footer class="bg-gray-800 grid grid-rows-1 grid-cols-1 sm:rounded-lg py-2 mt-2">
-                <h4 class="text-lg md:text-2xl text-center text-white py-5">&copy; Made with ❤️️ by Philip DiPaula, Thomas Whittle, & Evan Hardek</h4>
+                <h4 class="text-lg sm:text-2xl text-center text-white py-5">&copy; Made with ❤️️ by Philip DiPaula, Thomas Whittle, & Evan Hardek</h4>
             </footer>
 
         </div>
