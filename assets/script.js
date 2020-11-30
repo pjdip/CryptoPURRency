@@ -300,8 +300,8 @@ function renderTop() {
             var mktCap = $("<td>");
             var coinImg = $("<img>");
 
-            coinImg.attr("src", response[i].image).attr("style", "width: 20%; margin-right: 1px; display: inline;");
-            var coinBtn = $("<button>").text(response[i].name).attr("id", response[i].id).attr("class", "btn list-group-item p-1 border border-black border-opacity-100 rounded-md mb-1");
+            coinImg.attr("src", response[i].image).attr("style", "width: 20%; margin-right: 1px; margin-left: 15%; display: inline; float: left;");
+            var coinBtn = $("<button>").text(response[i].name).attr("id", response[i].id).attr("class", "btn list-group-item p-1 border border-black border-opacity-100 rounded-md mb-1").attr("style", "float: left;");
             dataName.append(coinImg);
             dataName.append(coinBtn);
             dataPrice.text("$" + response[i].current_price.toLocaleString());
