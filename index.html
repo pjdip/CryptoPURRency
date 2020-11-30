@@ -5,51 +5,93 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <!--   <link href="/path/to/tailwind.css" rel="stylesheet"> -->
         <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./assets/style.css" />
         <script src="https://kit.fontawesome.com/8056a67cd2.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw==" crossorigin="anonymous"></script>
         <title>CryptoPURRency</title>
-        <style>
-            .top10btn {
-                padding-left: 25px;
-            }
-            /* #coinIMG {
-                margin: 1;
-            } */
-        </style>
     </head>
 
     <body>
 
-        <div class="container mx-auto mb-60">
-            <nav class="bg-gray-800 inline-grid rounded-lg pl-5 grid-cols-6 py-1">
-                <div class="col-span-2 mt-3">
-                    <input type="text" name="" id="coinSearch" placeholder="Search" class="ml-2 mb-3 pl-3">
-                    <i id="searchButton" class="fas fa-search  p-2 bg-yellow-300 transition duration-500 ease-in-out hover:bg-green-400 transform hover:-translate-y-1 hover:scale-110"></i> 
+        <div class="container mx-auto mb-0">
+            <nav class="bg-gray-800 grid grid-rows-4 grid-cols-1 sm:rounded-lg py-2">
+
+                <div class="col-span-1 row-span-1">
+                    <h1 class="text-3xl sm:text-5xl text-white text-center mb-3 tracking-widest">
+                        <img class="inline mb-3" src="https://placekitten.com/50/50" />
+                        <a href="./index.html">
+                            Crypto<span class="text-purple-800">PURR</span>ency
+                        </a>
+                        <img class="inline mb-3" src="https://placekitten.com/50/50" />
+                    </h1>
                 </div>
 
-                <div class="col-span-54">
-                    <h1 class="text-5xl text-white text-center mb-3 tracking-widest">Crypto<span class="text-purple-800">PURR</span>ency</h1>
+                <div class="col-span-1 row-span-1 mt-1">
+                    <div class="text-center">
+                        <input type="text" name="" id="coinSearch" placeholder="Search a Coin" class="ml-2 mb-3 pl-3">
+                        <i id="searchButton" class="fas fa-search p-2 bg-yellow-300 transition duration-500 ease-in-out hover:bg-green-400 transform hover:-translate-y-1 hover:scale-110"></i> 
+                    </div>
                 </div>
+
+                <div class="col-span-1 row-span-1 mt-1">
+                    <div class="text-center text-white text-xl sm:text-3xl">
+                        <button id="randomCoin" class="p-1 border border-white border-opacity-100 rounded-md">Random Coin</button>
+                    </div>
+                </div>
+
+                <div class="col-span-1 row-span-1 mt-1">
+                    <div class="text-center text-white text-xl sm:text-3xl">
+                        <button id="displayPortfolio" class="p-1 border border-white border-opacity-100 rounded-md">My Portfolio</button>
+                    </div>
+                </div>
+
             </nav>
-
 
             <main class="grid grid-cols-10  min-h-screen">
 
-                <sidebar class="col-span-2 bg-green-400 rounded-lg p-5 m-2 md:text-md">
-                    <h2 class="text-xl font-medium leading-6 border-gray-200 mt-8 ml-2">Search History:</h2>
-                    <ul id="coinHistory" class="ml-2"></ul>
+                <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:mr-2 sm:text-md">
+                    <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 mt-1 sm:mt-4 ml-1 sm:ml-4 mb-1">Search History:</h2>
+                    <ul id="coinHistory" class="coinList mx-1 sm:mx-4 text-md sm:text-lg"></ul>
+                    <button id="clearHistory" class="clear ml-1 mr-1 sm:ml-4 sm:mr-4 mt-2 p-1 border border-black border-opacity-100 rounded-md">Clear History</button>
                 </sidebar>
 
-                <section class="col-span-6 bg-purple-800 rounded-lg m-2">
-                    <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg mx-5 mt-5">
-                    <div class="px-4 py-5 sm:px-6">
-                            <img id="coinIMG" class="inline" src="https://placekitten.com/50/50" />
-                            <h3 id="coinName" class="inline text-3xl mb-2 leading-6 font-medium text-gray-900"></h3>
-                            <p id="coinSymbol" class="inline"></p>
-                            <p id="currentPrice" class="inline float-right"></p>
-                            <a id="projectHomepage" target="_blank" href="#" class="block max-w-2xl text-sm text-blue-400"></a>
+                <section id="portfolioDisplay" class="hide col-span-8 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
+                    <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg m-2 sm:m-4">
+                        <div class="px-4 py-5 sm:px-6 text-center">
+                            <h4 class="mb-1 text-lg sm:text-xl">My Portfolio:</h4>
+                            <table id="portTable" class="coinTable text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
+                                <thead>
+                                  <tr>
+                                    <th class="w-2/12 ...">Coin</th>
+                                    <th class="w-2/12 ...">Price</th>
+                                    <th class="w-2/12 ...">1h</th>
+                                    <th class="w-2/12 ...">24h</th>
+                                    <th class="w-2/12 ...">7d</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="portBody">
+                                </tbody>
+                              </table>
+                            <button id="clearPortfolio" class="clear text-center text-md sm:text-lg p-1 border border-black border-opacity-100 rounded-md">Clear Portfolio</button>
                         </div>
+                    </div>
+                </section>
+
+                <section id ="coinDataDisplay" class="hide col-span-8 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
+                    <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg m-2 sm:m-4">
+
+                        <div class="px-4 py-5 sm:px-6">
+                            <img id="coinIMG" class="inline mb-3" src="https://placekitten.com/60/60" />
+                            <h3 id="coinName" class="inline text-3xl mb-2 leading-6 font-medium text-gray-900"></h3>
+                            <p id="coinSymbol" class="inline">Search for a coin by name, coingecko ID, or ticker symbol</p>
+                            <p id="currentPrice" class="md:inline md:float-right"></p>
+                            <div class="inline md:block">
+                                <a id="projectHomepage" target="_blank" href="#" class="inline max-w-2xl text-sm text-blue-400"></a>
+                                <button id="portfolioToggle" class="hide"></button>
+                            </div>
+                        </div>
+
                         <div>
-                          
                             <dl>
                                 <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
@@ -57,30 +99,67 @@
                                     </dt>
                                     <dd id="projectDescription" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
                                 </div>
+
                                 <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
                                         Market Capitalization
                                     </dt>
                                     <dd id="marketCap" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
                                 </div>
+                                
                                 <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
                                         24-Hour Volume
                                     </dt>
                                     <dd id="tradingVolume" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
                                 </div>
+                                
+                                <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Percent Change in 24 hours
+                                    </dt>
+                                    <dd id="24h" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                    <canvas id="myChart24h" class="hide"></canvas>
+                                </div>
+                                
+                                <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Percent Change in 30 days
+                                    </dt>
+                                    <dd id="30d" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                    <canvas id="myChart30d" class="hide"></canvas>
+                                </div>
+                                
+                                <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Percent Change in 200 days
+                                    </dt>
+                                    <dd id="200d" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                    <canvas id="myChart200d" class="hide"></canvas>
+                                </div>
+                                
+                                <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Percent Change in 1 year
+                                    </dt>
+                                    <dd id="1y" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
+                                    <canvas id="myChart1y" class="hide"></canvas>
+                                </div>
+                                
                                 <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
                                         All-Time High
                                     </dt>
                                     <dd id="ATH" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
                                 </div>
+                                
                                 <div class="bg-yellow-300 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
                                         Max Supply
                                     </dt>
                                     <dd id="maxSupply" class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"></dd>
                                 </div>
+                                
                                 <div class="bg-yellow-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500">
                                         Circulating Supply
@@ -92,19 +171,43 @@
                     </div>
                 </section>
 
-                <sidebar class="col-span-2 bg-green-400">
-                    <h2 class="text-xl font-medium leading-6 border-gray-200 mt-8 ml-2">Top 10 Coins by Market Capitalization:</h2>
-                    <ul id="top10" class="ml-2"></ul>
-                </sidebar>
-            </main>
-        </div>
+                <section id ="topDisplay" class="col-span-8 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
+                    <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg m-2 sm:m-4">
+                        <table id="topTable" class="coinTable overflow-scroll text-center text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
+                            <thead>
+                              <tr class="flex flex-col flex-no wrap sm:table-row">
+                                <th class="w-1/6 ...">Coin</th>
+                                <th class="w-1/6 ...">Price</th>
+                                <th class="w-1/12 ...">1h</th>
+                                <th class="w-1/12 ...">24h</th>
+                                <th class="w-1/12 ...">7d</th>
+                                <th class="w-1/4 ...">24h Volume</th>
+                                <th class="w-1/4 ...">Market Cap</th>
+                              </tr>
+                            </thead>
+                            <tbody id="topBody" class="flex-1 sm:flex-none">
+                            </tbody>
+                          </table>
+                    </div>
+                </section>
 
+<!--                 <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:ml-2">
+                    <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 mt-1 sm:mt-4 ml-1 sm:ml-4">Top 10 Coins by</h2>
+                    <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 ml-1 sm:ml-4 mb-1">Market Cap:</h2>
+                    <ul id="top10" class="coinList mx-1 sm:mx-4 text-md sm:text-lg"></ul>
+                </sidebar> -->
+            </main>
+
+            <footer class="bg-gray-800 grid grid-rows-1 grid-cols-1 sm:rounded-lg py-2 mt-2">
+                <h4 class="text-lg sm:text-2xl text-center text-white py-5">&copy; Made with ❤️️ by Philip DiPaula, Thomas Whittle, & Evan Hardek</h4>
+            </footer>
+
+        </div>
+        
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-        <script src="./script.js"></script>
+        <script src="./assets/script.js"></script>
     </body>
 </html>
-
-        
