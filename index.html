@@ -19,7 +19,7 @@
                 <div class="col-span-1 row-span-1">
                     <h1 class="text-3xl sm:text-5xl text-white text-center mb-3 tracking-widest">
                         <img class="inline mb-3" src="https://placekitten.com/50/50" />
-                        <a href="./index.html">
+                        <a class="text-white" href="./index.html">
                             Crypto<span class="text-purple-800">PURR</span>ency
                         </a>
                         <img class="inline mb-3" src="https://placekitten.com/50/50" />
@@ -33,55 +33,26 @@
                     </div>
                 </div>
 
-                <div class="col-span-1 row-span-1 mt-1">
+                <div class="col-span-1 row-span-1">
                     <div class="text-center text-white text-xl sm:text-3xl">
-                        <!-- <button id="randomCoin" class="p-1 border border-white border-opacity-100 rounded-md">Random Coin</button> -->
-                        <!-- <input type="text" name="" id="coinSearch" placeholder="Search a Coin" class="ml-2 mb-3 pl-3">
-                        <i id="searchButton" class="fas fa-search p-2 bg-yellow-300 transition duration-500 ease-in-out hover:bg-green-400 transform hover:-translate-y-1 hover:scale-110"></i> -->
-                        <button id="randomCoin"> Random Coin </button> 
-                        <button id="displayPortfolio" class="p-1 border border-white border-opacity-100 rounded-md"> My Portfolio </button>
+                        <button id="home"> Home </button>
+                        <button id="defi"> Defi </button>
+                        <button id="displayPortfolio"> My Portfolio </button>
+                        <button id="randomCoin"> Random Coin </button>
                     </div>
                 </div>
-
-                <!-- <div class="col-span-1 row-span-1 mt-1">
-                    <div class="text-center text-white text-xl sm:text-3xl">
-                       
-                    </div>
-                </div> -->
 
             </nav>
 
             <main class="grid grid-cols-10  min-h-screen">
 
-                <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:mr-2 sm:text-md">
+<!--                 <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:mr-2 sm:text-md">
                     <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 mt-1 sm:mt-4 ml-1 sm:ml-4 mb-1">Search History:</h2>
                     <ul id="coinHistory" class="coinList mx-1 sm:mx-4 text-md sm:text-lg"></ul>
                     <button id="clearHistory" class="clear ml-1 mr-1 sm:ml-4 sm:mr-4 mt-2 p-1 border border-black border-opacity-100 rounded-md">Clear History</button>
-                </sidebar>
+                </sidebar> -->
 
-                <section id="portfolioDisplay" class="hide col-span-8 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
-                    <div class="bg-yellow-100 shadow overflow-scroll sm:rounded-lg m-2 sm:m-4">
-                        <div class="px-4 py-5 sm:px-6 text-center">
-                            <h4 class="mb-1 text-lg sm:text-xl">My Portfolio:</h4>
-                            <table id="portTable" class="coinTable text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
-                                <thead>
-                                  <tr>
-                                    <th class="w-2/12 ...">Coin</th>
-                                    <th class="w-2/12 ...">Price</th>
-                                    <th class="w-2/12 ...">1h</th>
-                                    <th class="w-2/12 ...">24h</th>
-                                    <th class="w-2/12 ...">7d</th>
-                                  </tr>
-                                </thead>
-                                <tbody id="portBody">
-                                </tbody>
-                              </table>
-                            <button id="clearPortfolio" class="clear text-center text-md sm:text-lg p-1 border border-black border-opacity-100 rounded-md">Clear Portfolio</button>
-                        </div>
-                    </div>
-                </section>
-
-                <section id ="coinDataDisplay" class="hide col-span-8 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
+                <section id ="coinDataDisplay" class="hide col-span-10 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
                     <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg m-2 sm:m-4">
 
                         <div class="px-4 py-5 sm:px-6">
@@ -175,12 +146,32 @@
                     </div>
                 </section>
 
-                <section id ="topDisplay" class="col-span-8 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
+                <section id ="topDisplay" class="col-span-10 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
                     <div class="bg-yellow-100 shadow overflow-scroll sm:rounded-lg m-2 sm:m-4">
                         <table id="topTable" class="coinTable overflow-scroll text-center text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
                             <thead>
-                              <tr>
-                                <th class="w-1/6 ...">Coin</th>
+                              <tr class="mt-3">
+                                <th class="w-1/4">Coin</th>
+                                <th class="w-1/6">Price</th>
+                                <th class="w-1/12">1h</th>
+                                <th class="w-1/12">24h</th>
+                                <th class="w-1/12">7d</th>
+                                <th class="w-1/4">24h Volume</th>
+                                <th class="w-1/4">Market Cap</th>
+                              </tr>
+                            </thead>
+                            <tbody id="topBody">
+                            </tbody>
+                          </table>
+                    </div>
+                </section>
+
+                <section id ="defiDisplay" class="hide col-span-10 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
+                    <div class="bg-yellow-100 shadow overflow-scroll sm:rounded-lg m-2 sm:m-4">
+                        <table id="defiTable" class="coinTable overflow-scroll text-center text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
+                            <thead>
+                              <tr class="mt-3">
+                                <th class="w-1/4 ...">Coin</th>
                                 <th class="w-1/6 ...">Price</th>
                                 <th class="w-1/12 ...">1h</th>
                                 <th class="w-1/12 ...">24h</th>
@@ -189,9 +180,31 @@
                                 <th class="w-1/4 ...">Market Cap</th>
                               </tr>
                             </thead>
-                            <tbody id="topBody">
+                            <tbody id="defiBody">
                             </tbody>
                           </table>
+                    </div>
+                </section>
+
+                <section id="portfolioDisplay" class="hide col-span-10 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
+                    <div class="bg-yellow-100 shadow overflow-scroll sm:rounded-lg m-2 sm:m-4">
+                        <div class="px-4 py-5 sm:px-6 text-center">
+                            <h4 class="mb-2 text-xl sm:text-3xl">My Portfolio:</h4>
+                            <table id="portTable" class="coinTable text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
+                                <thead>
+                                  <tr>
+                                    <th class="w-2/12 ...">Coin</th>
+                                    <th class="w-2/12 ...">Price</th>
+                                    <th class="w-2/12 ...">1h</th>
+                                    <th class="w-2/12 ...">24h</th>
+                                    <th class="w-2/12 ...">7d</th>
+                                  </tr>
+                                </thead>
+                                <tbody id="portBody">
+                                </tbody>
+                              </table>
+                            <button id="clearPortfolio" class="clear text-center text-md sm:text-lg p-1 border border-black border-opacity-100 rounded-md">Clear Portfolio</button>
+                        </div>
                     </div>
                 </section>
 

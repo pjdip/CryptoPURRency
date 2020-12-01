@@ -1,3 +1,4 @@
+
 .hide {
     display: none;
 }
@@ -8,4 +9,92 @@
 
 a {
     color: blue;
+}
+
+#randomCoin , #displayPortfolio {
+    box-shadow:inset 0px 1px 0px 0px #bee2f9;
+	background:linear-gradient(to bottom, #63b8ee 5%, #468ccf 100%);
+	background-color:#63b8ee;
+	border-radius:6px;
+	border:1px solid #3866a3;
+	display:inline-block;
+	cursor:pointer;
+	color:#14396a;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #7cacde;
+}
+#randomCoin:hover , #displayPortfolio:hover {
+	background:linear-gradient(to bottom, #468ccf 5%, #63b8ee 100%);
+	background-color:#468ccf;
+}
+#randomCoin:active, #displayPortfolio:active {
+	position:relative;
+	top:1px;
+}
+
+#clearPortfolio , #portfolioToggle {
+	box-shadow:inset 0px 1px 0px 0px #d9ca6c;
+	background:linear-gradient(to bottom, #f0d313 5%, #fff98c 100%);
+	background-color:#f0d313;
+	border-radius:3px;
+	border:1px solid #f2ea96;
+	display:inline-block;
+	cursor:pointer;
+	color:#292029;
+	font-family:Arial;
+	font-size:13px;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #807716;
+}
+#clearPortfolio:hover , #portfolioToggle:hover {
+	background:linear-gradient(to bottom, #fff98c 5%, #f0d313 100%);
+	background-color:#fff98c;
+}
+#clearPortfolio:active , #portfolioToggle:active , #clearHistory:active {
+	position:relative;
+	top:1px;
+}
+#clearHistory {
+    box-shadow:inset 0px 1px 0px 0px #3dc21b;
+	background:linear-gradient(to bottom, #44c767 5%, #5cbf2a 100%);
+	background-color:#44c767;
+	border-radius:6px;
+	border:1px solid #18ab29;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+}
+#clearHistory:hover {
+	background:linear-gradient(to bottom, #2abd8c 5%, #44c767 100%);
+	background-color:#2abd8c;
+}
+.coin-btn {
+    box-shadow:inset 0px 1px 0px 0px #7a8eb9;
+	background:linear-gradient(to bottom, #637aad 5%, #5972a7 100%);
+	background-color:#637aad;
+	border:1px solid #314179;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:13px;
+	font-weight:bold;
+	padding:6px 12px;
+	text-decoration:none;
+}
+
+td {
+	padding: 10px;
+	text-align: text-center;
 }
