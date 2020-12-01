@@ -265,12 +265,19 @@ $("#displayPortfolio").on("click", function(event) {
 
         var qURL = coinSearchBaseURL + portfolioCoin.id + coinSearchEndURL;
         $.ajax({url: qURL, method: "GET"}).then(function(response) {
+            console.log(response);
             var coinBtn = $("<button>").text(response.name).attr("id", response.id).attr("class", "btn coin-btn rounded-md");
             dataName.append(coinBtn);
             dataPrice.text("$" + response.market_data.current_price.usd.toLocaleString());
-            delta1h.text(response.market_data.price_change_percentage_1h_in_currency.usd.toFixed(1).toLocaleString() + "%");
-            delta24h.text(response.market_data.price_change_percentage_24h_in_currency.usd.toFixed(1).toLocaleString() + "%");
-            delta7d.text(response.market_data.price_change_percentage_7d_in_currency.usd.toFixed(1).toLocaleString() + "%");
+            if (response.market_data.price_change_percentage_1h_in_currency.usd !== null && response.market_data.price_change_percentage_1h_in_currency.usd !== undefined) {
+                delta1h.text(response.market_data.price_change_percentage_1h_in_currency.usd.toFixed(1).toLocaleString() + "%");
+            }
+            if (response.market_data.price_change_percentage_24h_in_currency.usd !== null && response.market_data.price_change_percentage_24h_in_currency.usd !== undefined) {
+                delta24h.text(response.market_data.price_change_percentage_24h_in_currency.usd.toFixed(1).toLocaleString() + "%");
+            }
+            if (response.market_data.price_change_percentage_7d_in_currency.usd !== null && response.market_data.price_change_percentage_7d_in_currency.usd !== undefined) {
+                delta7d.text(response.market_data.price_change_percentage_7d_in_currency.usd.toFixed(1).toLocaleString() + "%");
+            }
 
             percentColor(response.market_data.price_change_percentage_1h_in_currency.usd, delta1h);
             percentColor(response.market_data.price_change_percentage_24h_in_currency.usd, delta24h);
