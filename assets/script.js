@@ -5,10 +5,26 @@ var coinSearchBaseURL = "https://api.coingecko.com/api/v3/coins/";
 var coinSearchEndURL = "?localization=false&tickers=false&market_data=true&community_data=true&developer_data=true";
 var supportedCoinsURL = "https://api.coingecko.com/api/v3/coins/list";
 var coinSupported;
-var happyGiphyURL = "https://api.giphy.com/v1/gifs/random?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=nyan%20cat&rating=g";
-var sadGiphyURL = "https://api.giphy.com/v1/gifs/random?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=scared%20cats&rating=g";
+var happyGiphyURL = "https://api.giphy.com/v1/gifs/trending?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=\"happy%20cat\"&rating=g";
+var sadGiphyURL = "https://api.giphy.com/v1/gifs/trending?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=\"scared%20cat\"&rating=g";
 var topURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=25&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d";
 var defiURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=decentralized_finance_defi&order=market_cap_desc&per_page=25&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d";
+// var hasVisited = localStorage.getItem("visits")
+
+
+// if (visits === null) {
+
+//     visits = 1;    
+// } 
+
+// localStorage.setItem("visits", hasVisited)
+
+$(document).ready(function() {
+    modalHeadline.innerText = "Welcome!";
+    modalText.innerText = "Welcome to CryptoPURRency! Here on the front page, you will find a ranking of the top 25 cryptos based on market cap, along with their movement over various time periods. Feel free to click any of them to learn more. ";
+    modal.style.display = "block";
+    
+})
 
 // Creating coin object prototype
 class Coin {
@@ -289,6 +305,8 @@ $("#displayPortfolio").on("click", function(event) {
             tableRow.append(delta24h);
             tableRow.append(delta7d);
             $("#portBody").append(tableRow);
+
+            
         });
     });
 });
@@ -444,7 +462,10 @@ $("#searchButton").on("click", function(event) {
 
         // Alert the user to search again or process the search if it is supported
         if (coinSupported === false) {
-            alert("The searched coin is not supported by coingecko. Please try searching for another coin.")
+            modalHeadline.innerText = "Invalid Search"
+            modalText.innerText = "The searched coin is not supported by coingecko. Please try searching for another coin."
+            modal.style.display = "block";
+            // alert("The searched coin is not supported by coingecko. Please try searching for another coin.")
         } else if (coinSupported === true) {
             updateRenderStore(newCoin);
         }
@@ -462,12 +483,24 @@ if (retrievedPortfolio !== null) {
     portfolio = JSON.parse(retrievedPortfolio);
 }
 
+//This section enables functionality for modal that pops up on invalid search
+var modal = document.getElementById("modal")
+var closeBtn = document.getElementById("closeModal")
+var modalHeadline = document.getElementById("modalHeadline")
+var modalText = document.getElementById("modalText")
+
+closeBtn.onclick = function() {
+    modal.style.display = "none"
+}
+
 /* renderTop10(); */
 renderHistory();
 renderTable(topURL, "#topBody");
 renderTable(defiURL, "#defiBody");
 
 /* 
+
+
 timeID: 24h, 7d, 14d, 30d, 60d, 200d, 1y
 currencyID: usd, eur, gbp, btc, eth, etc...
 
