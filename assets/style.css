@@ -97,3 +97,7 @@ td {
 	padding: 10px;
 	text-align: text-center;
 }
+
+#modal {
+	display: none;
+}
