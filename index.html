@@ -14,7 +14,7 @@
     <body>
 
         <div class="container mx-auto mb-0">
-            <nav class="bg-gray-800 grid grid-rows-2 grid-cols-1 sm:rounded-lg py-2">
+            <nav class="bg-gray-800 grid grid-rows-1 grid-cols-1 sm:rounded-lg py-2">
 
                 <div class="col-span-1 row-span-1">
                     <h1 class="text-3xl sm:text-5xl text-white text-center mb-3 tracking-widest">
@@ -33,7 +33,7 @@
                     </div>
                 </div>
 
-                <div class="col-span-1 row-span-1">
+                <div class="col-span-1 row-span-1 mb-1">
                     <div class="text-center text-white text-xl sm:text-3xl">
                         <button id="home"> Home </button>
                         <button id="defi"> Defi </button>
@@ -42,15 +42,77 @@
                     </div>
                 </div>
 
+                <div class="col-span-1 row-span-1">
+                    <div class="block text-center text-white text-md sm:text-xl">
+                        <p class="inline"> Market Cap: <span id="cap"></span> </p>
+                        <p class="inline"><span id="deltaCap"></span></p>
+                        <p class="block"> 24h Vol: <span id="vol"></span> </p>
+                    </div>
+                    <div class="block text-center text-white text-md sm:text-xl">
+                        <p class="inline mr-2"> Dominance: </p>
+                        <p class="inline mr-5"> BTC: <span id="btcDom"></span> </p>
+                        <p class="inline"> ETH: <span id="ethDom"></span> </p>
+                    </div>
+                </div>
+
             </nav>
 
-            <main class="grid grid-cols-10  min-h-screen">
+            <!-- This example requires Tailwind CSS v2.0+ -->
+            <div class="fixed z-10 inset-0 overflow-y-auto" id="modal">
+                <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                    <!--
+                    Background overlay, show/hide based on modal state.
+                
+                    Entering: "ease-out duration-300"
+                        From: "opacity-0"
+                        To: "opacity-100"
+                    Leaving: "ease-in duration-200"
+                        From: "opacity-100"
+                        To: "opacity-0"
+                    -->
+                    <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                    </div>
+                
+                    <!-- This element is to trick the browser into centering the modal contents. -->
+                    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                    <!--
+                    Modal panel, show/hide based on modal state.
+                
+                    Entering: "ease-out duration-300"
+                        From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                        To: "opacity-100 translate-y-0 sm:scale-100"
+                    Leaving: "ease-in duration-200"
+                        From: "opacity-100 translate-y-0 sm:scale-100"
+                        To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    -->
+                    <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+                        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                            <div class="sm:flex sm:items-start">
+                                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                    <!-- Heroicon name: exclamation -->
+                                    <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                </div>
+                                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modalHeadline"></h3>
+                                    <div class="mt-2">
+                                        <p class="text-sm text-gray-500" id="modalText"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                            <button type="button" id="closeModal" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-purple-800 text-base font-medium text-white hover:bg-purple-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Ok
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<!--                 <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:mr-2 sm:text-md">
-                    <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 mt-1 sm:mt-4 ml-1 sm:ml-4 mb-1">Search History:</h2>
-                    <ul id="coinHistory" class="coinList mx-1 sm:mx-4 text-md sm:text-lg"></ul>
-                    <button id="clearHistory" class="clear ml-1 mr-1 sm:ml-4 sm:mr-4 mt-2 p-1 border border-black border-opacity-100 rounded-md">Clear History</button>
-                </sidebar> -->
+            <main class="grid grid-cols-10  min-h-screen">
 
                 <section id ="coinDataDisplay" class="hide col-span-10 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
                     <div class="bg-yellow-100 shadow overflow-hidden sm:rounded-lg m-2 sm:m-4">
@@ -148,7 +210,7 @@
 
                 <section id ="topDisplay" class="col-span-10 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
                     <div class="bg-yellow-100 shadow overflow-scroll sm:rounded-lg m-2 sm:m-4">
-                        <table id="topTable" class="coinTable overflow-scroll text-center text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
+                        <table id="topTable" class="coinTable divide-y-2 divide-yellow-600 overflow-scroll text-center text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
                             <thead>
                               <tr class="mt-3">
                                 <th class="w-1/4 md:w-1/6">Coin</th>
@@ -161,7 +223,7 @@
                                 <th class="w-1/4">7d Chart</th>
                               </tr>
                             </thead>
-                            <tbody id="topBody">
+                            <tbody id="topBody" class="divide-y-2 divide-yellow-600">
                             </tbody>
                           </table>
                     </div>
@@ -169,7 +231,7 @@
 
                 <section id ="defiDisplay" class="hide col-span-10 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
                     <div class="bg-yellow-100 shadow overflow-scroll sm:rounded-lg m-2 sm:m-4">
-                        <table id="defiTable" class="coinTable overflow-scroll text-center text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
+                        <table id="defiTable" class="coinTable divide-y-2 divide-yellow-600 overflow-scroll text-center text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
                             <thead>
                               <tr class="mt-3">
                                 <th class="w-1/4 md:w-1/6">Coin</th>
@@ -182,7 +244,7 @@
                                 <th class="w-1/4">7d Chart</th>
                               </tr>
                             </thead>
-                            <tbody id="defiBody">
+                            <tbody id="defiBody" class="divide-y-2 divide-yellow-600">
                             </tbody>
                           </table>
                     </div>
@@ -190,7 +252,7 @@
 
                 <section id ="portfolioDisplay" class="hide col-span-10 bg-purple-800 sm:rounded-lg sm:mt-2 sm:mx-1">
                     <div class="bg-yellow-100 shadow overflow-scroll sm:rounded-lg m-2 sm:m-4">
-                        <table id="portTable" class="coinTable overflow-scroll text-center text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
+                        <table id="portTable" class="coinTable divide-y-2 divide-yellow-600 overflow-scroll text-center text-sm sm:text-md md:text-lg mx-auto px-2 table-fixed">
                             <thead>
                               <tr class="mt-3">
                                 <th class="w-1/4 md:w-1/6">Coin</th>
@@ -203,17 +265,13 @@
                                 <th class="w-1/4">7d Chart</th>
                               </tr>
                             </thead>
-                            <tbody id="portBody">
+                            <tbody id="portBody" class="divide-y-2 divide-yellow-600">
                             </tbody>
                           </table>
+                          <button id="clearPortfolio" class="clear text-center text-md sm:text-lg p-1 border border-black border-opacity-100 rounded-md">Clear Portfolio</button>
+                        </div>
                     </div>
                 </section>
-
-                <!-- <sidebar class="col-span-2 bg-green-400 sm:rounded-lg sm:mt-2 sm:ml-2">
-                    <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 mt-1 sm:mt-4 ml-1 sm:ml-4">Top 10 Coins by</h2>
-                    <h2 class="text-lg sm:text-xl font-medium leading-6 border-gray-200 ml-1 sm:ml-4 mb-1">Market Cap:</h2>
-                    <ul id="top10" class="coinList mx-1 sm:mx-4 text-md sm:text-lg"></ul>
-                </sidebar> -->
             </main>
 
             <footer class="bg-gray-800 grid grid-rows-1 grid-cols-1 sm:rounded-lg py-2 md:mt-2">

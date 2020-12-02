@@ -5,11 +5,60 @@ var coinSearchBaseURL = "https://api.coingecko.com/api/v3/coins/";
 var coinSearchEndURL = "?localization=false&tickers=false&market_data=true&community_data=true&developer_data=true&sparkline=true";
 var supportedCoinsURL = "https://api.coingecko.com/api/v3/coins/list";
 var coinSupported;
-var happyGiphyURL = "https://api.giphy.com/v1/gifs/random?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag='cat-party'&rating=g";
-var sadGiphyURL = "https://api.giphy.com/v1/gifs/random?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag='sad-cat'&rating=g";
+var happyGiphyURL = "https://api.giphy.com/v1/gifs/trending?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=\"happy%20cat\"&rating=g";
+var sadGiphyURL = "https://api.giphy.com/v1/gifs/trending?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=\"scared%20cat\"&rating=g";
 var topURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=25&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d";
 var defiURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=decentralized_finance_defi&order=market_cap_desc&per_page=25&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d";
+var globalURL = "https://api.coingecko.com/api/v3/global";
 
+$.ajax({url: globalURL, method: "GET"}).then(function(resp) {
+    $("#cap").text("$" + resp.data.total_market_cap.usd.toLocaleString());
+    $("#deltaCap").text(resp.data.market_cap_change_percentage_24h_usd.toFixed(2) + "%");
+    if (resp.data.market_cap_change_percentage_24h_usd < 0) {
+        $("#deltaCap").attr("style", "color: red;")
+    }
+    if (resp.data.market_cap_change_percentage_24h_usd > 0) {
+        $("#deltaCap").attr("style", "color: green;")
+    }
+    $("#vol").text("$" + resp.data.total_volume.usd.toLocaleString());
+    $("#btcDom").text(resp.data.market_cap_percentage.btc.toFixed(2) + "%");
+    $("#ethDom").text(resp.data.market_cap_percentage.eth.toFixed(2) + "%");
+});
+
+/* var idList = [];
+$.ajax({url: supportedCoinsURL, method: "GET"}).then(function(resp) {
+    for (var n = 0; n < 6000; n++) {
+        if (n % 60 === 0) {
+            idList.push(resp[n].id);
+        }
+    }
+    console.log(idList);
+    idList.forEach(function(coinID) {
+        var catList = [];
+        var urlGreyHot = coinSearchBaseURL + coinID + coinSearchBaseURL;
+        $.ajax({url: urlGreyHot, method: "GET"}).then(function(resp1) {
+            catList.push(resp1.categories);
+        });
+        console.log(catList);
+    });
+}); */
+
+// var hasVisited = localStorage.getItem("visits")
+
+
+// if (visits === null) {
+
+//     visits = 1;    
+// } 
+
+// localStorage.setItem("visits", hasVisited)
+
+/* $(document).ready(function() {
+    modalHeadline.innerText = "Welcome!";
+    modalText.innerText = "Welcome to CryptoPURRency! Here on the front page, you will find a ranking of the top 25 cryptos based on market cap, along with their movement over various time periods. Feel free to click any of them to learn more. ";
+    modal.style.display = "block";
+    
+}) */
 
 // Creating coin object prototype
 class Coin {
@@ -288,15 +337,13 @@ function renderTable(url, tableID) {
             } else if (tableID === "#portBody") {
                 var chartID = "portChart" + i;
             }
-            var myChart = $("<canvas>").attr("id", chartID);
+            var myChart = $("<canvas>").attr("id", chartID).attr("style", "width: 240px;");
 
             coinImg.attr("src", response[i].image).attr("class", "w-8").attr("style", "margin-right: 1px; display: inline; float: left;");
             var coinBtn = $("<button>").attr("id", response[i].id).attr("class", "btn coin-btn rounded-md mb-1").attr("style", "float: left;");
             if (window.visualViewport.width < 768) {
-/*                 nameDiv.attr("style", "width: 110px;"); */
                 coinBtn.text(response[i].symbol.toUpperCase());
             } else if (window.visualViewport.width >= 768) {
-/*                 nameDiv.attr("style", "width: 180px;") */
                 coinBtn.text(response[i].name);
             }
             nameDiv.append(coinImg).append(coinBtn);
@@ -304,13 +351,13 @@ function renderTable(url, tableID) {
             dataPrice.text("$" + response[i].current_price.toLocaleString());
 
             if (response[i].price_change_percentage_1h_in_currency !== null && response[i].price_change_percentage_1h_in_currency !== undefined) {
-                delta1h.text(response[i].price_change_percentage_1h_in_currency.toFixed(1).toLocaleString() + "%");
+                delta1h.text(response[i].price_change_percentage_1h_in_currency.toFixed(1) + "%");
             }
             if (response[i].price_change_percentage_24h_in_currency !== null && response[i].price_change_percentage_24h_in_currency !== undefined) {
-                delta24h.text(response[i].price_change_percentage_24h_in_currency.toFixed(1).toLocaleString() + "%");
+                delta24h.text(response[i].price_change_percentage_24h_in_currency.toFixed(1) + "%");
             }
             if (response[i].price_change_percentage_7d_in_currency !== null && response[i].price_change_percentage_7d_in_currency !== undefined) {
-                delta7d.text(response[i].price_change_percentage_7d_in_currency.toFixed(1).toLocaleString() + "%");
+                delta7d.text(response[i].price_change_percentage_7d_in_currency.toFixed(1) + "%");
             }
 
             vol.text("$" + response[i].total_volume.toLocaleString());
@@ -496,7 +543,10 @@ $("#searchButton").on("click", function(event) {
 
         // Alert the user to search again or process the search if it is supported
         if (coinSupported === false) {
-            alert("The searched coin is not supported by coingecko. Please try searching for another coin.")
+            modalHeadline.innerText = "Invalid Search"
+            modalText.innerText = "The searched coin is not supported by coingecko. Please try searching for another coin."
+            modal.style.display = "block";
+            // alert("The searched coin is not supported by coingecko. Please try searching for another coin.")
         } else if (coinSupported === true) {
             updateRenderStore(newCoin);
         }
@@ -512,6 +562,16 @@ if (retrievedCoins !== null) {
 var retrievedPortfolio = localStorage.getItem("portfolio");
 if (retrievedPortfolio !== null) {
     portfolio = JSON.parse(retrievedPortfolio);
+}
+
+//This section enables functionality for modal that pops up on invalid search
+var modal = document.getElementById("modal")
+var closeBtn = document.getElementById("closeModal")
+var modalHeadline = document.getElementById("modalHeadline")
+var modalText = document.getElementById("modalText")
+
+closeBtn.onclick = function() {
+    modal.style.display = "none"
 }
 
 /* renderTop10(); */
