@@ -2,13 +2,47 @@ var coinHistory = [];
 var portfolio = [];
 var baseURL = "https://api.coingecko.com/api/v3";
 var coinSearchBaseURL = "https://api.coingecko.com/api/v3/coins/";
-var coinSearchEndURL = "?localization=false&tickers=false&market_data=true&community_data=true&developer_data=true";
+var coinSearchEndURL = "?localization=false&tickers=false&market_data=true&community_data=true&developer_data=true&sparkline=true";
 var supportedCoinsURL = "https://api.coingecko.com/api/v3/coins/list";
 var coinSupported;
 var happyGiphyURL = "https://api.giphy.com/v1/gifs/trending?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=\"happy%20cat\"&rating=g";
 var sadGiphyURL = "https://api.giphy.com/v1/gifs/trending?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=\"scared%20cat\"&rating=g";
 var topURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=25&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d";
 var defiURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=decentralized_finance_defi&order=market_cap_desc&per_page=25&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d";
+var globalURL = "https://api.coingecko.com/api/v3/global";
+
+$.ajax({url: globalURL, method: "GET"}).then(function(resp) {
+    $("#cap").text("$" + resp.data.total_market_cap.usd.toLocaleString());
+    $("#deltaCap").text(resp.data.market_cap_change_percentage_24h_usd.toFixed(2) + "%");
+    if (resp.data.market_cap_change_percentage_24h_usd < 0) {
+        $("#deltaCap").attr("style", "color: red;")
+    }
+    if (resp.data.market_cap_change_percentage_24h_usd > 0) {
+        $("#deltaCap").attr("style", "color: green;")
+    }
+    $("#vol").text("$" + resp.data.total_volume.usd.toLocaleString());
+    $("#btcDom").text(resp.data.market_cap_percentage.btc.toFixed(2) + "%");
+    $("#ethDom").text(resp.data.market_cap_percentage.eth.toFixed(2) + "%");
+});
+
+/* var idList = [];
+$.ajax({url: supportedCoinsURL, method: "GET"}).then(function(resp) {
+    for (var n = 0; n < 6000; n++) {
+        if (n % 60 === 0) {
+            idList.push(resp[n].id);
+        }
+    }
+    console.log(idList);
+    idList.forEach(function(coinID) {
+        var catList = [];
+        var urlGreyHot = coinSearchBaseURL + coinID + coinSearchBaseURL;
+        $.ajax({url: urlGreyHot, method: "GET"}).then(function(resp1) {
+            catList.push(resp1.categories);
+        });
+        console.log(catList);
+    });
+}); */
+
 // var hasVisited = localStorage.getItem("visits")
 
 
@@ -19,12 +53,12 @@ var defiURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ca
 
 // localStorage.setItem("visits", hasVisited)
 
-$(document).ready(function() {
+/* $(document).ready(function() {
     modalHeadline.innerText = "Welcome!";
     modalText.innerText = "Welcome to CryptoPURRency! Here on the front page, you will find a ranking of the top 25 cryptos based on market cap, along with their movement over various time periods. Feel free to click any of them to learn more. ";
     modal.style.display = "block";
     
-})
+}) */
 
 // Creating coin object prototype
 class Coin {
@@ -212,8 +246,11 @@ function renderGraph(URL, range) {
                 labels: interval,
                 datasets: [{
                     label: graphLabel,
+                    fill: false,
                     backgroundColor: 'rgb(255, 99, 132)',
                     borderColor: 'rgb(255, 99, 132)',
+                    pointRadius: 0,
+                    lineTension: 0,
                     data: prices
                 }]
             },
@@ -269,52 +306,18 @@ $("#displayPortfolio").on("click", function(event) {
     hide("topDisplay");
     reveal("portfolioDisplay");
     $("#portBody").empty();
+    var portURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&sparkline=true&price_change_percentage=1h%2C24h%2C7d&ids=";
 
-    // Creating a new button and li element for each coin and appending them to the ul in the html
     portfolio.forEach(function(portfolioCoin) {
-        var tableRow = $("<tr>");
-        var dataName = $("<td>");
-        var dataPrice = $("<td>");
-        var delta1h = $("<td>");
-        var delta24h = $("<td>");
-        var delta7d = $("<td>");
-
-        var qURL = coinSearchBaseURL + portfolioCoin.id + coinSearchEndURL;
-        $.ajax({url: qURL, method: "GET"}).then(function(response) {
-            console.log(response);
-            var coinBtn = $("<button>").text(response.name).attr("id", response.id).attr("class", "btn coin-btn rounded-md");
-            dataName.append(coinBtn);
-            dataPrice.text("$" + response.market_data.current_price.usd.toLocaleString());
-            if (response.market_data.price_change_percentage_1h_in_currency.usd !== null && response.market_data.price_change_percentage_1h_in_currency.usd !== undefined) {
-                delta1h.text(response.market_data.price_change_percentage_1h_in_currency.usd.toFixed(1).toLocaleString() + "%");
-            }
-            if (response.market_data.price_change_percentage_24h_in_currency.usd !== null && response.market_data.price_change_percentage_24h_in_currency.usd !== undefined) {
-                delta24h.text(response.market_data.price_change_percentage_24h_in_currency.usd.toFixed(1).toLocaleString() + "%");
-            }
-            if (response.market_data.price_change_percentage_7d_in_currency.usd !== null && response.market_data.price_change_percentage_7d_in_currency.usd !== undefined) {
-                delta7d.text(response.market_data.price_change_percentage_7d_in_currency.usd.toFixed(1).toLocaleString() + "%");
-            }
-
-            percentColor(response.market_data.price_change_percentage_1h_in_currency.usd, delta1h);
-            percentColor(response.market_data.price_change_percentage_24h_in_currency.usd, delta24h);
-            percentColor(response.market_data.price_change_percentage_7d_in_currency.usd, delta7d);
-
-            tableRow.append(dataName);
-            tableRow.append(dataPrice);
-            tableRow.append(delta1h);
-            tableRow.append(delta24h);
-            tableRow.append(delta7d);
-            $("#portBody").append(tableRow);
-
-            
-        });
+        portURL += portfolioCoin.id + ",";
     });
+    var portSlice = portURL.slice(0, -1);
+    renderTable(portSlice, "#portBody");
 });
 
 function renderTable(url, tableID) {
     $(tableID).empty();
     $.ajax({url: url, method: "GET"}).then(function(response) {
-        // loop through the 10 requested coins
         for (var i = 0; i < response.length; i++) {
             var tableRow = $("<tr>");
             var dataName = $("<td>");
@@ -325,15 +328,38 @@ function renderTable(url, tableID) {
             var vol = $("<td>");
             var mktCap = $("<td>");
             var coinImg = $("<img>");
+            var nameDiv = $("<div>").attr("class", "w-28 md:w-44");
+            var chart1 = $("<td>");
+            if (tableID === "#topBody") {
+                var chartID = "topChart" + i;
+            } else if (tableID === "#defiBody") {
+                var chartID = "defiChart" + i;
+            } else if (tableID === "#portBody") {
+                var chartID = "portChart" + i;
+            }
+            var myChart = $("<canvas>").attr("id", chartID).attr("style", "width: 240px;");
 
-            coinImg.attr("src", response[i].image).attr("class", "w-1/4 md:w-1/6").attr("style", "margin-right: 1px; margin-left: 15%; display: inline; float: left;");
-            var coinBtn = $("<button>").text(response[i].name).attr("id", response[i].id).attr("class", "btn coin-btn rounded-md mb-1").attr("style", "float: left;");
-            dataName.append(coinImg);
-            dataName.append(coinBtn);
+            coinImg.attr("src", response[i].image).attr("class", "w-8").attr("style", "margin-right: 1px; display: inline; float: left;");
+            var coinBtn = $("<button>").attr("id", response[i].id).attr("class", "btn coin-btn rounded-md mb-1").attr("style", "float: left;");
+            if (window.visualViewport.width < 768) {
+                coinBtn.text(response[i].symbol.toUpperCase());
+            } else if (window.visualViewport.width >= 768) {
+                coinBtn.text(response[i].name);
+            }
+            nameDiv.append(coinImg).append(coinBtn);
+            dataName.append(nameDiv);
             dataPrice.text("$" + response[i].current_price.toLocaleString());
-            delta1h.text(response[i].price_change_percentage_1h_in_currency.toFixed(1).toLocaleString() + "%");
-            delta24h.text(response[i].price_change_percentage_24h_in_currency.toFixed(1).toLocaleString() + "%");
-            delta7d.text(response[i].price_change_percentage_7d_in_currency.toFixed(1).toLocaleString() + "%");
+
+            if (response[i].price_change_percentage_1h_in_currency !== null && response[i].price_change_percentage_1h_in_currency !== undefined) {
+                delta1h.text(response[i].price_change_percentage_1h_in_currency.toFixed(1) + "%");
+            }
+            if (response[i].price_change_percentage_24h_in_currency !== null && response[i].price_change_percentage_24h_in_currency !== undefined) {
+                delta24h.text(response[i].price_change_percentage_24h_in_currency.toFixed(1) + "%");
+            }
+            if (response[i].price_change_percentage_7d_in_currency !== null && response[i].price_change_percentage_7d_in_currency !== undefined) {
+                delta7d.text(response[i].price_change_percentage_7d_in_currency.toFixed(1) + "%");
+            }
+
             vol.text("$" + response[i].total_volume.toLocaleString());
             mktCap.text("$" + response[i].market_cap.toLocaleString());
 
@@ -349,7 +375,61 @@ function renderTable(url, tableID) {
             tableRow.append(vol);
             tableRow.append(mktCap);
 
-            $(tableID).append(tableRow);
+            if (response[i].sparkline_in_7d.price !== []) {
+                var priceData = response[i].sparkline_in_7d.price;
+                var interval = [];
+                for (var l = 0; l < priceData.length; l++) {
+                    interval.push(l);
+                }
+    
+                chart1.append(myChart);
+                tableRow.append(chart1);
+                $(tableID).append(tableRow);
+    
+                var ctx = document.getElementById(chartID).getContext('2d');
+                var chart = new Chart(ctx, {
+                    // The type of chart we want to create
+                    type: 'line',
+        
+                    // The data for our dataset
+                    data: {
+                        labels: interval,
+                        datasets: [{
+                            fill: false,
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            pointRadius: 0,
+                            lineTension: 0,
+                            data: priceData
+                        }]
+                    },
+        
+                    // Configuration options go here
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            xAxes: [{
+                                gridLines: {
+                                    display: false
+                                },
+                                ticks: {
+                                    display: false
+                                }
+                            }],
+                            yAxes: [{
+                                gridLines: {
+                                    display: false
+                                },
+                                ticks: {
+                                    display: false
+                                }
+                            }]
+                        }
+                    }
+                });
+            }
         }
     });
 }
@@ -360,6 +440,7 @@ $("#defi").on("click", function(event) {
     hide("topDisplay");
     hide("coinDataDisplay");
     reveal("defiDisplay");
+    renderTable(defiURL, "#defiBody");
 });
 
 $("#home").on("click", function(event) {
@@ -496,11 +577,8 @@ closeBtn.onclick = function() {
 /* renderTop10(); */
 renderHistory();
 renderTable(topURL, "#topBody");
-renderTable(defiURL, "#defiBody");
 
 /* 
-
-
 timeID: 24h, 7d, 14d, 30d, 60d, 200d, 1y
 currencyID: usd, eur, gbp, btc, eth, etc...
 
