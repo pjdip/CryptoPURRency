@@ -326,6 +326,7 @@ function renderTable(url, tableID) {
     $.ajax({url: url, method: "GET"}).then(function(response) {
         for (var i = 0; i < response.length; i++) {
             var tableRow = $("<tr>");
+            var marketRank = $("<td>");
             var dataName = $("<td>");
             var dataPrice = $("<td>");
             var delta1h = $("<td>");
@@ -334,7 +335,7 @@ function renderTable(url, tableID) {
             var vol = $("<td>");
             var mktCap = $("<td>");
             var coinImg = $("<img>");
-            var nameDiv = $("<div>").attr("class", "w-28 md:w-44");
+            var nameDiv = $("<div>").attr("class", "text-center mx-auto w-28 md:w-44");
             var chart1 = $("<td>");
 
             // The generated chartID needs to be different depending on the table
@@ -351,8 +352,9 @@ function renderTable(url, tableID) {
             var myChart = $("<canvas>").attr("id", chartID).attr("style", "width: 240px;");
 
             // Appending lots of things to the table
+            marketRank.text(response[i].market_cap_rank);
             coinImg.attr("src", response[i].image).attr("class", "w-8").attr("style", "margin-right: 1px; display: inline; float: left;");
-            var coinBtn = $("<button>").attr("id", response[i].id).attr("class", "btn coin-btn rounded-md mb-1").attr("style", "float: left;");
+            var coinBtn = $("<button>").attr("id", response[i].id).attr("class", "text-center mx-auto btn coin-btn rounded-md mb-1").attr("style", "float: left;");
 
             // Depending on the viewport width, the name is displayed as the full name or the symbol
             if (window.visualViewport.width < 768) {
@@ -382,6 +384,7 @@ function renderTable(url, tableID) {
             percentColor(response[i].price_change_percentage_24h_in_currency, delta24h);
             percentColor(response[i].price_change_percentage_7d_in_currency, delta7d);
 
+            tableRow.append(marketRank);
             tableRow.append(dataName);
             tableRow.append(dataPrice);
             tableRow.append(delta1h);
