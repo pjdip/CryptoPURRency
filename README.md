@@ -14,7 +14,7 @@ The goal of this project was to use our newly acquired skills and knowledge to b
 
 ## Installation
 
-The only thing you will need to have installed in order to run the index.html file is a functioning web browser. It should work with most versions of most browswers. I highly recommend the Brave browser for this app, as you will be paid in the Basic Attention Token (BAT) for viewing ads, instead of being bombarded with ads and getting nothing for it. It is also valuable to use this browser, as it is in keeping with the theme of the project. The webpage will require access to the localStorage on your browser in order to save the portfolio properly.
+The only thing you will need to have installed in order to run the index.html file is a functioning web browser. It should work with most versions of most browswers. I highly recommend the [Brave](https://basicattentiontoken.org/) browser for this app, as you will be paid in the Basic Attention Token (BAT) for viewing ads, instead of being bombarded with ads and getting nothing for it. It is also valuable to use this browser, as it is in keeping with the theme of the project. The webpage will require access to the localStorage on your browser in order to save the portfolio properly.
 
 ## Usage 
 
@@ -32,6 +32,7 @@ From Desktop:
 ![main](./assets/images/mainpage.png)
 ![defi](./assets/images/defi.png)
 ![portfolio](./assets/images/portfolio.png)
+![hourGraph](./assets/images/hourGraph.png)
 ![graph](./assets/images/graph.png)
 ![coin data](./assets/images/bitcoin.png)
 ![sad cat](./assets/images/honey.png)
@@ -66,6 +67,8 @@ Thanks to MDN for [string manipulation](https://developer.mozilla.org/en-US/docs
 Thanks to jQuery documentation for help with [tree-traversal](https://api.jquery.com/category/traversing/tree-traversal/)
 
 Thanks to www.geeksforgeeks.org for help with [parsing html](https://www.geeksforgeeks.org/jquery-parsehtml-method/)
+
+Thanks to w3schools for help with the [scrollTo()](https://www.w3schools.com/jsref/met_win_scrollto.asp) method
 
 Special Thanks to [ChilledCow](https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow) for providing chill lofi beats to code to
 
