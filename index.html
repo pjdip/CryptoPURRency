@@ -16,41 +16,35 @@
         <div class="container mx-auto mb-0">
             <nav class="bg-gray-800 grid grid-rows-1 grid-cols-1 sm:rounded-lg py-2">
 
-                <div class="col-span-1 row-span-1">
-                    <h1 class="text-3xl sm:text-5xl text-white text-center mb-3 tracking-widest">
-                        <img class="inline mb-3" src="https://placekitten.com/50/50" />
-                        <a class="text-white" href="./index.html">
-                            Crypto<span class="text-purple-800">PURR</span>ency
-                        </a>
-                        <img class="inline mb-3" src="https://placekitten.com/50/50" />
-                    </h1>
+                <h1 class="col-span-1 row-span-1 text-3xl sm:text-5xl text-white text-center mb-3 tracking-widest">
+                    <img class="inline mb-3" src="https://placekitten.com/50/50" />
+                    <a class="text-white" href="./index.html">
+                        Crypto<span class="text-purple-800">PURR</span>ency
+                    </a>
+                    <img class="inline mb-3" src="https://placekitten.com/50/50" />
+                </h1>
+
+                <div class="col-span-1 row-span-1 mt-1 text-center">
+                    <input type="text" name="" id="coinSearch" placeholder="Search a Coin" class="ml-2 mb-3 pl-3">
+                    <i id="searchButton" class="fas fa-search p-2 bg-yellow-300 transition duration-500 ease-in-out hover:bg-green-400 transform hover:-translate-y-1 hover:scale-110"></i>
                 </div>
 
-                <div class="col-span-1 row-span-1 mt-1">
-                    <div class="text-center">
-                        <input type="text" name="" id="coinSearch" placeholder="Search a Coin" class="ml-2 mb-3 pl-3">
-                        <i id="searchButton" class="fas fa-search p-2 bg-yellow-300 transition duration-500 ease-in-out hover:bg-green-400 transform hover:-translate-y-1 hover:scale-110"></i> 
-                    </div>
+                <div class="col-span-1 row-span-1 mb-1 text-center text-white text-xl sm:text-3xl">
+                    <button id="home"> Home </button>
+                    <button id="defi"> Defi </button>
+                    <button id="displayPortfolio"> My Portfolio </button>
+                    <button id="randomCoin"> Random Coin </button>
                 </div>
 
-                <div class="col-span-1 row-span-1 mb-1">
-                    <div class="text-center text-white text-xl sm:text-3xl">
-                        <button id="home"> Home </button>
-                        <button id="defi"> Defi </button>
-                        <button id="displayPortfolio"> My Portfolio </button>
-                        <button id="randomCoin"> Random Coin </button>
-                    </div>
-                </div>
-
-                <div class="col-span-1 row-span-1">
-                    <div class="block text-center text-white text-md sm:text-xl">
-                        <p class="inline"> Market Cap: <span id="cap"></span> </p>
-                        <p class="inline"><span id="deltaCap"></span></p>
+                <div class="col-span-1 row-span-1 text-center text-white text-sm sm:text-lg">
+                    <div class="block">
+                        <p class="inline mr-2"> Market Cap: <span id="cap"></span> </p>
+                        <p class="inline"> Δ24h: <span id="deltaCap"></span></p>
                         <p class="block"> 24h Vol: <span id="vol"></span> </p>
                     </div>
-                    <div class="block text-center text-white text-md sm:text-xl">
+                    <div class="block">
                         <p class="inline mr-2"> Dominance: </p>
-                        <p class="inline mr-5"> BTC: <span id="btcDom"></span> </p>
+                        <p class="inline mr-4"> BTC: <span id="btcDom"></span> </p>
                         <p class="inline"> ETH: <span id="ethDom"></span> </p>
                     </div>
                 </div>
@@ -267,8 +261,9 @@
                             </thead>
                             <tbody id="portBody" class="divide-y-2 divide-yellow-600">
                             </tbody>
-                          </table>
-                          <button id="clearPortfolio" class="clear text-center text-md sm:text-lg p-1 border border-black border-opacity-100 rounded-md">Clear Portfolio</button>
+                        </table>
+                        <div class="text-center text-md sm:text-lg mb-2">
+                            <button id="clearPortfolio">Clear Portfolio</button>
                         </div>
                     </div>
                 </section>

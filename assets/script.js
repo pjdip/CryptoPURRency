@@ -1,29 +1,37 @@
-var coinHistory = [];
 var portfolio = [];
-var baseURL = "https://api.coingecko.com/api/v3";
 var coinSearchBaseURL = "https://api.coingecko.com/api/v3/coins/";
 var coinSearchEndURL = "?localization=false&tickers=false&market_data=true&community_data=true&developer_data=true&sparkline=true";
 var supportedCoinsURL = "https://api.coingecko.com/api/v3/coins/list";
 var coinSupported;
-var happyGiphyURL = "https://api.giphy.com/v1/gifs/trending?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=\"happy%20cat\"&rating=g";
-var sadGiphyURL = "https://api.giphy.com/v1/gifs/trending?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=\"scared%20cat\"&rating=g";
+
+/* var happyGiphyURL = "https://api.giphy.com/v1/gifs/trending?api_key=G3MCuvuGO6gsk6inMCLBuAL36qD432u3&tag='cat%20party'&rating=g";
+var sadGiphyURL = "https://api.giphy.com/v1/gifs/trending?api_key=G3MCuvuGO6gsk6inMCLBuAL36qD432u3&tag='scared%20sad%20cat'&rating=g"; */
+
+var happyGiphyURL = "https://api.giphy.com/v1/gifs/random?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=\"happy+cat+party\"&rating=g";
+var sadGiphyURL = "https://api.giphy.com/v1/gifs/random?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=\"scared+sad+angry+unhappy+cat\"&rating=g";
+
 var topURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=25&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d";
 var defiURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=decentralized_finance_defi&order=market_cap_desc&per_page=25&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d";
 var globalURL = "https://api.coingecko.com/api/v3/global";
 
+// Api call to grab global cryptocurrency market data
 $.ajax({url: globalURL, method: "GET"}).then(function(resp) {
-    $("#cap").text("$" + resp.data.total_market_cap.usd.toLocaleString());
+    $("#cap").text("$" + resp.data.total_market_cap.usd.toLocaleString().slice(0,-4));
     $("#deltaCap").text(resp.data.market_cap_change_percentage_24h_usd.toFixed(2) + "%");
-    if (resp.data.market_cap_change_percentage_24h_usd < 0) {
-        $("#deltaCap").attr("style", "color: red;")
-    }
-    if (resp.data.market_cap_change_percentage_24h_usd > 0) {
-        $("#deltaCap").attr("style", "color: green;")
-    }
-    $("#vol").text("$" + resp.data.total_volume.usd.toLocaleString());
+    percentColor(resp.data.market_cap_change_percentage_24h_usd, $("#deltaCap"));
+    $("#vol").text("$" + resp.data.total_volume.usd.toLocaleString().slice(0,-4));
     $("#btcDom").text(resp.data.market_cap_percentage.btc.toFixed(2) + "%");
     $("#ethDom").text(resp.data.market_cap_percentage.eth.toFixed(2) + "%");
 });
+
+// Alter the color of a jQuery object depending on the percent argument
+function percentColor(percent, jObj) {
+    if (percent > 0) {
+        jObj.attr("style", "color: green;")
+    } else if (percent < 0) {
+        jObj.attr("style", "color: red;")
+    }
+}
 
 /* var idList = [];
 $.ajax({url: supportedCoinsURL, method: "GET"}).then(function(resp) {
@@ -42,23 +50,6 @@ $.ajax({url: supportedCoinsURL, method: "GET"}).then(function(resp) {
         console.log(catList);
     });
 }); */
-
-// var hasVisited = localStorage.getItem("visits")
-
-
-// if (visits === null) {
-
-//     visits = 1;    
-// } 
-
-// localStorage.setItem("visits", hasVisited)
-
-/* $(document).ready(function() {
-    modalHeadline.innerText = "Welcome!";
-    modalText.innerText = "Welcome to CryptoPURRency! Here on the front page, you will find a ranking of the top 25 cryptos based on market cap, along with their movement over various time periods. Feel free to click any of them to learn more. ";
-    modal.style.display = "block";
-    
-}) */
 
 // Creating coin object prototype
 class Coin {
@@ -80,63 +71,34 @@ function reveal(hiddenID) {
     document.getElementById(hiddenID).classList.add("reveal");
 }
 
-// Simple storage functions
-function storeCoins() {
-    var stringyCoins = JSON.stringify(coinHistory);
-    localStorage.setItem("coins", stringyCoins);
-}
+// Hides/reveals a bunch of elements on click event
+$("#home").on("click", function(event) {
+    event.preventDefault();
+    hide("portfolioDisplay");
+    reveal("topDisplay");
+    hide("coinDataDisplay");
+    hide("defiDisplay");
+});
 
-function storePortfolio() {
-    var stringyPortfolio = JSON.stringify(portfolio);
-    localStorage.setItem("portfolio", stringyPortfolio);
-}
+// Hides/reveals a bunch of stuff on click event
+// Have to render the table after the element is revealed or the graphs get messed up
+$("#defi").on("click", function(event) {
+    event.preventDefault();
+    hide("portfolioDisplay");
+    hide("topDisplay");
+    hide("coinDataDisplay");
+    reveal("defiDisplay");
+    renderTable(defiURL, "#defiBody");
+});
 
-// This function dynamically creates the search history list
-function renderHistory() {
-
-    $("#coinHistory").empty();
-
-    // Creating a new button and li element for each coin and appending them to the ul in the html
-    coinHistory.forEach(function(searchedCoin) {
-        var newCoin1 = $("<li>");
-        var coinButton = $("<button>").text(searchedCoin.name).attr("id", searchedCoin.id).attr("class", "btn coin-btn list-group-item p-1 border border-black border-opacity-100 rounded-md mb-1").attr("style", "text-align: left;");
-        newCoin1.append(coinButton);
-        $("#coinHistory").append(newCoin1);
+// Grabs a random coin from the supported list and displays the data
+$("#randomCoin").on("click", function(event) {
+    event.preventDefault();
+    $.ajax({url: supportedCoinsURL, method: "GET"}).then(function(response) {
+        randCoinIndex = Math.floor(Math.random() * response.length);
+        renderCoinData(response[randCoinIndex].id);
     });
-}
-
-// Makes an api call to get the top 10 coins by market cap, then dynamically generates html 
-function renderTop10() {
-    $("#top10").empty();
-    var top10URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false";
-    $.ajax({url: top10URL, method: "GET"}).then(function(response) {
-
-        // loop through the 10 requested coins
-        for (var i = 0; i < 10; i++) {
-            var newCoin2 = $("<li>");
-            var coinButton = $("<button>").text(response[i].name).attr("id", response[i].id).attr("class", "btn top10btn list-group-item p-1 border border-black border-opacity-100 rounded-md mb-1").attr("style", "text-align: left;");
-            newCoin2.append(coinButton);
-            $("#top10").append(newCoin2);
-        }
-    });
-}
-
-// Generates a gif based on percent change of a coin and appends to provided html element ID
-function renderGifs(percent, htmlID) {
-    if (percent > 0) {
-        $.ajax({url: happyGiphyURL, method: "GET"}).then(function(resp1) {
-            var kittyIMG = $("<img>");
-            kittyIMG.attr("src", resp1.data.images.fixed_height.url).attr("class", "text-center");
-            $(htmlID).append(kittyIMG);
-        });        
-    } else if (percent < 0) {
-        $.ajax({url: sadGiphyURL, method: "GET"}).then(function(resp2) {
-            var kittyIMG = $("<img>");
-            kittyIMG.attr("src", resp2.data.images.fixed_height.url).attr("class", "text-center");
-            $(htmlID).append(kittyIMG);
-        });
-    }
-}
+});
 
 // This function does double duty by finding the index of a pre-existing object in an array
 // or returning -1 if the object with the searched property is not already in the array
@@ -155,7 +117,7 @@ function IndexOfArrayObject(array, objProperty, searched) {
 }
 
 // Takes a coingecko coin-ID and generates html from api-retreived data
-function renderCoinData(coinVar) {
+function renderCoinData(coinID) {
 
     // Empty all the things
     $("#coinIMG").empty(), $("#coinName").empty();
@@ -166,14 +128,14 @@ function renderCoinData(coinVar) {
     $("#ATH").empty(), $("#ATHdate").empty();
 
     // Create queryURL and make ajax call to generate lots of things
-    var queryURL = coinSearchBaseURL + coinVar + coinSearchEndURL;
+    var queryURL = coinSearchBaseURL + coinID + coinSearchEndURL;
     $.ajax({url: queryURL, method: "GET"}).then(function(response) {
         $("#coinIMG").attr("src", response.image.thumb);
         $("#coinName").text(response.name).attr("data-coinID", response.id);
         $("#coinSymbol").text("(" + response.symbol + ")");
         $("#currentPrice").text("Current Price: $" + response.market_data.current_price.usd.toLocaleString());
 
-        // Check if a coin is in the portfolio to adjust portfolio text
+        // Check if a coin is in the portfolio to adjust portfolio button text
         var myCoin = new Coin(response.name, response.id);
         var indX = IndexOfArrayObject(portfolio, "id", myCoin.id);
         if (indX !== -1) {
@@ -200,6 +162,11 @@ function renderCoinData(coinVar) {
         renderGifs(response.market_data.price_change_percentage_200d, "#200d");
         renderGifs(response.market_data.price_change_percentage_1y, "#1y");
 
+        percentColor(response.market_data.price_change_percentage_24h, $("#24h"));
+        percentColor(response.market_data.price_change_percentage_30d, $("#30d"));
+        percentColor(response.market_data.price_change_percentage_200d, $("#200d"));
+        percentColor(response.market_data.price_change_percentage_1y, $("#1y"));
+
         $("#24h").text(response.market_data.price_change_percentage_24h);
         $("#30d").text(response.market_data.price_change_percentage_30d);
         $("#200d").text(response.market_data.price_change_percentage_200d);
@@ -216,26 +183,69 @@ function renderCoinData(coinVar) {
         $("#ATH").text("$" + response.market_data.ath.usd.toLocaleString() + " on " + response.market_data.ath_date.usd.slice(0, 10));
     });
 
-    /*     renderGraph(priceURL(coinVar, 1, "hourly"), "24h"); */
-    renderGraph(priceURL(coinVar, 30, "daily"), "30d");
-    renderGraph(priceURL(coinVar, 200, "daily"), "200d");
-    renderGraph(priceURL(coinVar, 365, "daily"), "1y");
+    renderGraph(priceURL(coinID, 1, "hourly"), "24h");
+    renderGraph(priceURL(coinID, 30, "daily"), "30d");
+    renderGraph(priceURL(coinID, 200, "daily"), "200d");
+    renderGraph(priceURL(coinID, 365, "daily"), "1y");
 
+    hide("portfolioDisplay");
+    hide("defiDisplay");
+    hide("topDisplay");
+    reveal("coinDataDisplay");
 }
 
-function renderGraph(URL, range) {
-    var chartID = "myChart" + range;
-    var graphLabel = range + " Price Chart";
+// Generates a gif based on percent change of a coin's value and append to provided html element ID
+function renderGifs(percent, htmlID) {
+    var kittyIMG = $("<img>");
+    if (percent > 0) {
+        $.ajax({url: happyGiphyURL, method: "GET"}).then(function(resp1) {
+            /* var randCat = Math.floor(Math.random() * resp1.data.length);
+            kittyIMG.attr("src", resp1.data[randCat].images.fixed_height.url).attr("class", "text-center"); */
+
+            kittyIMG.attr("src", resp1.data.images.fixed_height.url).attr("class", "text-center");
+            $(htmlID).append(kittyIMG);
+        });        
+    } else if (percent < 0) {
+        $.ajax({url: sadGiphyURL, method: "GET"}).then(function(resp2) {
+            /* var randCat2 = Math.floor(Math.random() * resp2.data.length);
+            kittyIMG.attr("src", resp2.data[randCat2].images.fixed_height.url).attr("class", "text-center"); */
+
+            kittyIMG.attr("src", resp2.data.images.fixed_height.url).attr("class", "text-center");
+            $(htmlID).append(kittyIMG);
+        });
+    }
+}
+
+// Returns a constructed URL for a price api call based on provided arguments
+function priceURL(coinID, days, interval) {
+    return coinSearchBaseURL + coinID + "/market_chart?vs_currency=usd&days=" + days + "&interval=" + interval;
+}
+
+// Takes a url that pulls price data and an html id that signifies the range of data
+// (If I had more time I would utilize data-attributes so much more)
+function renderGraph(URL, rangeID) {
+    var chartID = "myChart" + rangeID;
+    var graphLabel = rangeID + " Price Chart";
 
     $.ajax({url: URL, method: "GET"}).then(function(response) {
         var prices = [];
         var interval = [];
+        if (rangeID === "24h") {
+            var xLabel = false;
+            var xAx = [];
+            for (var m = 0; m < 25; m ++) {
+                xAx.push(m);
+            }
+        } else {
+            xLabel = true;
+        }
+
         for (var j = 0; j < response.prices.length; j++) {
             interval.push(j);
             prices.push(response.prices[j][1].toFixed(4));
         }
 
-        reveal(range);
+        reveal(rangeID);
         var ctx = document.getElementById(chartID).getContext('2d');
         var chart = new Chart(ctx, {
             // The type of chart we want to create
@@ -256,47 +266,32 @@ function renderGraph(URL, range) {
             },
 
             // Configuration options go here
-            options: {}
+            options: {
+                legend: {
+                    display: false
+                },
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            display: xLabel
+                        },
+                        scaleLabel: {
+                            display: xLabel,
+                            labelString: 'days'
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return '$' + value;
+                            }
+                        },
+                    }]
+                }
+            }
         });
     });
 }
-
-function priceURL(ID, days, interval) {
-    var graphDays = "/market_chart?vs_currency=usd&days=" + days;
-    var graphInterval = "&interval=" + interval;
-    return coinSearchBaseURL + ID + graphDays + graphInterval;
-}
-
-// Updates coinHistory and combines various functions that are always called together
-function updateRenderStore(coinFriend) {
-
-    // if searched coin is already in the history, remove it
-    var index = IndexOfArrayObject(coinHistory, "id", coinFriend.id);
-    if (index !== -1) {
-        coinHistory.splice(index, 1);
-    }
-
-    // add searched coin to the top of the history
-    coinHistory.unshift(coinFriend);
-
-    // render coin data, render/store history
-    hide("portfolioDisplay");
-    hide("topDisplay");
-    reveal("coinDataDisplay");
-    renderCoinData(coinFriend.id);
-    storeCoins();
-    renderHistory();
-}
-
-// grabs a random coin from the supported list and displays the data
-$("#randomCoin").on("click", function(eventems) {
-    eventems.preventDefault();
-    $.ajax({url: supportedCoinsURL, method: "GET"}).then(function(resp3) {
-        randCoinIndex = Math.floor(Math.random() * resp3.length);
-        randCoin = new Coin(resp3[randCoinIndex].name, resp3[randCoinIndex].id);
-        updateRenderStore(randCoin);
-    });
-});
 
 // Hides the coin data section and generates/displays the portfolio
 $("#displayPortfolio").on("click", function(event) {
@@ -308,15 +303,26 @@ $("#displayPortfolio").on("click", function(event) {
     $("#portBody").empty();
     var portURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&sparkline=true&price_change_percentage=1h%2C24h%2C7d&ids=";
 
+    // Add Id's to the url for each coin in the portfolio
     portfolio.forEach(function(portfolioCoin) {
         portURL += portfolioCoin.id + ",";
     });
+
+    // Cut off the last ','
     var portSlice = portURL.slice(0, -1);
-    renderTable(portSlice, "#portBody");
+
+    // check that portfolio wasn't empty. due to obnoxious truthiness rules, it did not work to compare portfolio to the empty array
+    if (portSlice !== "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&sparkline=true&price_change_percentage=1h%2C24h%2C7d&ids") {
+        renderTable(portSlice, "#portBody");
+    }
 });
 
+// Renders a table of api acquired data from the url into the html element with the given ID
 function renderTable(url, tableID) {
     $(tableID).empty();
+
+    // url's fed to this function will return a list of coins
+    // Here we dynamically generate a table row for each one
     $.ajax({url: url, method: "GET"}).then(function(response) {
         for (var i = 0; i < response.length; i++) {
             var tableRow = $("<tr>");
@@ -330,6 +336,9 @@ function renderTable(url, tableID) {
             var coinImg = $("<img>");
             var nameDiv = $("<div>").attr("class", "w-28 md:w-44");
             var chart1 = $("<td>");
+
+            // The generated chartID needs to be different depending on the table
+            // Otherwise we override the graphs
             if (tableID === "#topBody") {
                 var chartID = "topChart" + i;
             } else if (tableID === "#defiBody") {
@@ -337,10 +346,15 @@ function renderTable(url, tableID) {
             } else if (tableID === "#portBody") {
                 var chartID = "portChart" + i;
             }
+
+            // Generating a canvas with the id
             var myChart = $("<canvas>").attr("id", chartID).attr("style", "width: 240px;");
 
+            // Appending lots of things to the table
             coinImg.attr("src", response[i].image).attr("class", "w-8").attr("style", "margin-right: 1px; display: inline; float: left;");
             var coinBtn = $("<button>").attr("id", response[i].id).attr("class", "btn coin-btn rounded-md mb-1").attr("style", "float: left;");
+
+            // Depending on the viewport width, the name is displayed as the full name or the symbol
             if (window.visualViewport.width < 768) {
                 coinBtn.text(response[i].symbol.toUpperCase());
             } else if (window.visualViewport.width >= 768) {
@@ -350,6 +364,7 @@ function renderTable(url, tableID) {
             dataName.append(nameDiv);
             dataPrice.text("$" + response[i].current_price.toLocaleString());
 
+            // Newer coins will not have values for some of these, coingecko api does not seem to be especially uniform
             if (response[i].price_change_percentage_1h_in_currency !== null && response[i].price_change_percentage_1h_in_currency !== undefined) {
                 delta1h.text(response[i].price_change_percentage_1h_in_currency.toFixed(1) + "%");
             }
@@ -375,6 +390,7 @@ function renderTable(url, tableID) {
             tableRow.append(vol);
             tableRow.append(mktCap);
 
+            // Not all coins come with this data
             if (response[i].sparkline_in_7d.price !== []) {
                 var priceData = response[i].sparkline_in_7d.price;
                 var interval = [];
@@ -386,6 +402,7 @@ function renderTable(url, tableID) {
                 tableRow.append(chart1);
                 $(tableID).append(tableRow);
     
+                // Straight out of chart.js documentation
                 var ctx = document.getElementById(chartID).getContext('2d');
                 var chart = new Chart(ctx, {
                     // The type of chart we want to create
@@ -434,60 +451,26 @@ function renderTable(url, tableID) {
     });
 }
 
-$("#defi").on("click", function(event) {
-    event.preventDefault();
-    hide("portfolioDisplay");
-    hide("topDisplay");
-    hide("coinDataDisplay");
-    reveal("defiDisplay");
-    renderTable(defiURL, "#defiBody");
-});
-
-$("#home").on("click", function(event) {
-    event.preventDefault();
-    hide("portfolioDisplay");
-    reveal("topDisplay");
-    hide("coinDataDisplay");
-    hide("defiDisplay");
-});
-
-$(".coinTable").on("click", function(evnt) {
-    evnt.preventDefault();        
-    if (evnt.target.matches("button")) {
-        var coinVar13 = new Coin (evnt.target.textContent, evnt.target.getAttribute("id"));
-        updateRenderStore(coinVar13);
+// Event Delegation for coin buttons (they are all stored in a table)
+$(".coinTable").on("click", function(event) {
+    event.preventDefault();        
+    if (event.target.matches("button")) {
+        renderCoinData(event.target.getAttribute("id"));
     }
 });
 
-function percentColor(percent, elem) {
-    if (percent > 0) {
-        elem.attr("style", "color: green;")
-    } else if (percent < 0) {
-        elem.attr("style", "color: red;")
-    }
+// Stores the portfolio array in local storage
+function storePortfolio() {
+    var stringyPortfolio = JSON.stringify(portfolio);
+    localStorage.setItem("portfolio", stringyPortfolio);
 }
 
-// Event delegation for all the coin buttons :D
-$(".coinList").on("click", function(evt) {
-    evt.preventDefault();
-    if (evt.target.matches("button")) {
-        var coinVar10 = new Coin (evt.target.textContent, evt.target.getAttribute("id"));
-        updateRenderStore(coinVar10);
-    }
-});
-
-// clear history and portfolio buttons
-$(".clear").on("click", function(event) {
+// Empties the portfolio array and updates the display
+$("#clearPortfolio").on("click", function(event) {
     event.preventDefault();
-    if ($(this).attr("id") === "clearHistory") {
-        coinHistory = [];
-        storeCoins();
-        renderHistory();
-    } else if ($(this).attr("id") === "clearPortfolio") {
-        portfolio = [];
-        storePortfolio();
-        $("#portBody").empty();        
-    }
+    portfolio = [];
+    storePortfolio();
+    $("#portBody").empty();
 });
 
 // Adds or removes a coin from the portfolio and adjusts the button text
@@ -519,6 +502,7 @@ $("#searchButton").on("click", function(event) {
 
     // Verify coin exists
     // add this to local storage?
+    // there are 6,000 supported coins, might be too many?
     $.ajax({url: supportedCoinsURL, method: "GET"}).then(function(response) {
         coinSupported = false;
 
@@ -548,17 +532,12 @@ $("#searchButton").on("click", function(event) {
             modal.style.display = "block";
             // alert("The searched coin is not supported by coingecko. Please try searching for another coin.")
         } else if (coinSupported === true) {
-            updateRenderStore(newCoin);
+            renderCoinData(newCoin.id);
         }
     });
 });
 
-// Retrieve coinHistory and portfolio from local storage
-var retrievedCoins = localStorage.getItem("coins");
-if (retrievedCoins !== null) {
-    coinHistory = JSON.parse(retrievedCoins);
-}
-
+// Retrieve portfolio from local storage and store in variable
 var retrievedPortfolio = localStorage.getItem("portfolio");
 if (retrievedPortfolio !== null) {
     portfolio = JSON.parse(retrievedPortfolio);
@@ -574,10 +553,11 @@ closeBtn.onclick = function() {
     modal.style.display = "none"
 }
 
-/* renderTop10(); */
-renderHistory();
+// Main page table display rendering
 renderTable(topURL, "#topBody");
 
+
+// api stuff:
 /* 
 timeID: 24h, 7d, 14d, 30d, 60d, 200d, 1y
 currencyID: usd, eur, gbp, btc, eth, etc...
