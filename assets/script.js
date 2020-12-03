@@ -4,11 +4,8 @@ var coinSearchEndURL = "?localization=false&tickers=false&market_data=true&commu
 var supportedCoinsURL = "https://api.coingecko.com/api/v3/coins/list";
 var coinSupported;
 
-/* var happyGiphyURL = "https://api.giphy.com/v1/gifs/trending?api_key=G3MCuvuGO6gsk6inMCLBuAL36qD432u3&tag='cat%20party'&rating=g";
-var sadGiphyURL = "https://api.giphy.com/v1/gifs/trending?api_key=G3MCuvuGO6gsk6inMCLBuAL36qD432u3&tag='scared%20sad%20cat'&rating=g"; */
-
-var happyGiphyURL = "https://api.giphy.com/v1/gifs/random?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=\"happy+cat+party\"&rating=g";
-var sadGiphyURL = "https://api.giphy.com/v1/gifs/random?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&tag=\"scared+sad+angry+unhappy+cat\"&rating=g";
+var happyGiphyURL = "https://api.giphy.com/v1/gifs/search?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&rating=g&limit=50&q='cat+celebration'";
+var sadGiphyURL = "https://api.giphy.com/v1/gifs/search?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&rating=g&limit=50&q='scared+cat'";
 
 var topURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=25&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d";
 var defiURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=decentralized_finance_defi&order=market_cap_desc&per_page=25&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d";
@@ -32,24 +29,6 @@ function percentColor(percent, jObj) {
         jObj.attr("style", "color: red;")
     }
 }
-
-/* var idList = [];
-$.ajax({url: supportedCoinsURL, method: "GET"}).then(function(resp) {
-    for (var n = 0; n < 6000; n++) {
-        if (n % 60 === 0) {
-            idList.push(resp[n].id);
-        }
-    }
-    console.log(idList);
-    idList.forEach(function(coinID) {
-        var catList = [];
-        var urlGreyHot = coinSearchBaseURL + coinID + coinSearchBaseURL;
-        $.ajax({url: urlGreyHot, method: "GET"}).then(function(resp1) {
-            catList.push(resp1.categories);
-        });
-        console.log(catList);
-    });
-}); */
 
 // Creating coin object prototype
 class Coin {
@@ -199,18 +178,14 @@ function renderGifs(percent, htmlID) {
     var kittyIMG = $("<img>");
     if (percent > 0) {
         $.ajax({url: happyGiphyURL, method: "GET"}).then(function(resp1) {
-            /* var randCat = Math.floor(Math.random() * resp1.data.length);
-            kittyIMG.attr("src", resp1.data[randCat].images.fixed_height.url).attr("class", "text-center"); */
-
-            kittyIMG.attr("src", resp1.data.images.fixed_height.url).attr("class", "text-center");
+            var randCat = Math.floor(Math.random() * resp1.data.length);
+            kittyIMG.attr("src", resp1.data[randCat].images.fixed_height.url).attr("class", "text-center");
             $(htmlID).append(kittyIMG);
         });        
     } else if (percent < 0) {
         $.ajax({url: sadGiphyURL, method: "GET"}).then(function(resp2) {
-            /* var randCat2 = Math.floor(Math.random() * resp2.data.length);
-            kittyIMG.attr("src", resp2.data[randCat2].images.fixed_height.url).attr("class", "text-center"); */
-
-            kittyIMG.attr("src", resp2.data.images.fixed_height.url).attr("class", "text-center");
+            var randCat2 = Math.floor(Math.random() * resp2.data.length);
+            kittyIMG.attr("src", resp2.data[randCat2].images.fixed_height.url).attr("class", "text-center");
             $(htmlID).append(kittyIMG);
         });
     }
@@ -228,21 +203,19 @@ function renderGraph(URL, rangeID) {
     var graphLabel = rangeID + " Price Chart";
 
     $.ajax({url: URL, method: "GET"}).then(function(response) {
-        var prices = [];
+        var priceArray = [];
         var interval = [];
-        if (rangeID === "24h") {
-            var xLabel = false;
-            var xAx = [];
-            for (var m = 0; m < 25; m ++) {
-                xAx.push(m);
-            }
-        } else {
-            xLabel = true;
-        }
 
+        // time formatting and price collection
         for (var j = 0; j < response.prices.length; j++) {
-            interval.push(j);
-            prices.push(response.prices[j][1].toFixed(4));
+            if (rangeID === "24h") {
+                var day = moment(response.prices[j][0]);
+                interval.push(day.format('HH' + ':' + 'ss'));
+            } else {
+                var day = moment(response.prices[j][0]);
+                interval.push(day.format('MM' + '/' + 'DD'));
+            }
+            priceArray.push(response.prices[j][1].toFixed(4));
         }
 
         reveal(rangeID);
@@ -261,7 +234,7 @@ function renderGraph(URL, rangeID) {
                     borderColor: 'rgb(255, 99, 132)',
                     pointRadius: 0,
                     lineTension: 0,
-                    data: prices
+                    data: priceArray
                 }]
             },
 
@@ -273,17 +246,23 @@ function renderGraph(URL, rangeID) {
                 scales: {
                     xAxes: [{
                         ticks: {
-                            display: xLabel
+                            display: true
                         },
                         scaleLabel: {
-                            display: xLabel,
-                            labelString: 'days'
+                            display: true,
+/*                             labelString: 'time' */
                         }
                     }],
                     yAxes: [{
                         ticks: {
                             callback: function(value, index, values) {
-                                return '$' + value;
+                                if (value < 0.01) {
+                                    return '$' + value.toFixed(5);
+                                } else if (value > 100) {
+                                    return '$' + value;
+                                } else {
+                                    return '$' + value.toFixed(2);
+                                }
                             }
                         },
                     }]
@@ -459,6 +438,9 @@ $(".coinTable").on("click", function(event) {
     event.preventDefault();        
     if (event.target.matches("button")) {
         renderCoinData(event.target.getAttribute("id"));
+
+        // sends user to the top of the page
+        window.scrollTo(0, 0);
     }
 });
 
