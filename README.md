@@ -2,7 +2,7 @@
 
 ## These are the files for the first OSU Web Development Bootcamp Project Assignment
 
-Here is a [link](https://pjdip.github.io/CryptoPURRency/) to the live page :D
+Here is a [link](https://settc.github.io/CryptoPURRency/) to the live page :D
 
 The goal of this project was to use our newly acquired skills and knowledge to build a web application from scratch. In order to do this, we needed to learn how to use git more effectively in a team setting and harness our creativity. The app we created allows the user to search for a cryptocurrency and find current and past market data on that coin.
 
@@ -14,7 +14,7 @@ The goal of this project was to use our newly acquired skills and knowledge to b
 
 ## Installation
 
-The only thing you will need to have installed in order to run the index.html file is a functioning web browser. It should work with most versions of most browswers. I highly recommend the Brave browser for this app, as you will be paid in the Basic Attention Token (BAT) for viewing ads, instead of being bombarded with ads and getting nothing for it. It is also valuable to use this browser, as it is in keeping with the theme of the project. The webpage will require access to the localStorage on your browser in order to save the portfolio properly.
+The only thing you will need to have installed in order to run the index.html file is a functioning web browser. It should work with most versions of most browswers. I highly recommend the [Brave](https://basicattentiontoken.org/) browser for this app, as you will be paid in the Basic Attention Token (BAT) for viewing ads, instead of being bombarded with ads and getting nothing for it. It is also valuable to use this browser, as it is in keeping with the theme of the project. The webpage will require access to the localStorage on your browser in order to save the portfolio properly.
 
 ## Usage 
 
@@ -67,15 +67,17 @@ Thanks to jQuery documentation for help with [tree-traversal](https://api.jquery
 
 Thanks to www.geeksforgeeks.org for help with [parsing html](https://www.geeksforgeeks.org/jquery-parsehtml-method/)
 
+Thanks to w3schools for help with the [scrollTo()](https://www.w3schools.com/jsref/met_win_scrollto.asp) method
+
 Special Thanks to [ChilledCow](https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow) for providing chill lofi beats to code to
 
 ## Badges
 
-![languages](https://img.shields.io/github/languages/count/pjdip/CryptoPURRency)
-![top-language](https://img.shields.io/github/languages/top/pjdip/CryptoPURRency)
-![repo-size](https://img.shields.io/github/repo-size/pjdip/CryptoPURRency)
-![open-issues](https://img.shields.io/github/issues-raw/pjdip/CryptoPURRency)
-![last-commit](https://img.shields.io/github/last-commit/pjdip/CryptoPURRency)
+![languages](https://img.shields.io/github/languages/count/Settc/CryptoPURRency)
+![top-language](https://img.shields.io/github/languages/top/Settc/CryptoPURRency)
+![repo-size](https://img.shields.io/github/repo-size/Settc/CryptoPURRency)
+![open-issues](https://img.shields.io/github/issues-raw/Settc/CryptoPURRency)
+![last-commit](https://img.shields.io/github/last-commit/Settc/CryptoPURRency)
 
 ## License
 
