@@ -205,16 +205,8 @@ function renderGraph(URL, rangeID) {
     $.ajax({url: URL, method: "GET"}).then(function(response) {
         var priceArray = [];
         var interval = [];
-        if (rangeID === "24h") {
-            var xLabel = false;
-            var xAx = [];
-            for (var m = 0; m < 25; m ++) {
-                xAx.push(m);
-            }
-        } else {
-            xLabel = true;
-        }
 
+        // time formatting and price collection
         for (var j = 0; j < response.prices.length; j++) {
             if (rangeID === "24h") {
                 var day = moment(response.prices[j][0]);
@@ -258,7 +250,7 @@ function renderGraph(URL, rangeID) {
                         },
                         scaleLabel: {
                             display: true,
-                            labelString: 'time'
+/*                             labelString: 'time' */
                         }
                     }],
                     yAxes: [{
@@ -446,6 +438,8 @@ $(".coinTable").on("click", function(event) {
     event.preventDefault();        
     if (event.target.matches("button")) {
         renderCoinData(event.target.getAttribute("id"));
+
+        // sends user to the top of the page
         window.scrollTo(0, 0);
     }
 });

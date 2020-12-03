@@ -32,6 +32,7 @@ From Desktop:
 ![main](./assets/images/mainpage.png)
 ![defi](./assets/images/defi.png)
 ![portfolio](./assets/images/portfolio.png)
+![hourGraph](./assets/images/hourGraph.png)
 ![graph](./assets/images/graph.png)
 ![coin data](./assets/images/bitcoin.png)
 ![sad cat](./assets/images/honey.png)
