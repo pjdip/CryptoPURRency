@@ -2,7 +2,7 @@
 
 ## These are the files for the first OSU Web Development Bootcamp Project Assignment
 
-Here is a [link](https://settc.github.io/CryptoPURRency/) to the live page :D
+Here is a [link](https://pjdip.github.io/CryptoPURRency/) to the live page :D
 
 The goal of this project was to use our newly acquired skills and knowledge to build a web application from scratch. In order to do this, we needed to learn how to use git more effectively in a team setting and harness our creativity. The app we created allows the user to search for a cryptocurrency and find current and past market data on that coin.
 
