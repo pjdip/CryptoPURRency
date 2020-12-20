@@ -3,6 +3,7 @@ var coinSearchBaseURL = "https://api.coingecko.com/api/v3/coins/";
 var coinSearchEndURL = "?localization=false&tickers=false&market_data=true&community_data=true&developer_data=true&sparkline=true";
 var supportedCoinsURL = "https://api.coingecko.com/api/v3/coins/list";
 var coinSupported;
+/* const pie = require('./pie.js'); */
 
 var happyGiphyURL = "https://api.giphy.com/v1/gifs/search?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&rating=g&limit=50&q='cat+celebration'";
 var sadGiphyURL = "https://api.giphy.com/v1/gifs/search?api_key=6Legl3aRJS1kacPW7P9jmdcU7C4c4Q48&rating=g&limit=50&q='scared+cat'";
@@ -32,9 +33,10 @@ function percentColor(percent, jObj) {
 
 // Creating coin object prototype
 class Coin {
-    constructor(name, id) {
+    constructor(name, id, symbol) {
         this.name = name;
         this.id = id;
+        this.symbol = symbol;
     }
 }
 
@@ -57,6 +59,7 @@ $("#home").on("click", function(event) {
     reveal("topDisplay");
     hide("coinDataDisplay");
     hide("defiDisplay");
+    hide("pieDisplay");
 });
 
 // Hides/reveals a bunch of stuff on click event
@@ -66,6 +69,7 @@ $("#defi").on("click", function(event) {
     hide("portfolioDisplay");
     hide("topDisplay");
     hide("coinDataDisplay");
+    hide("pieDisplay");
     reveal("defiDisplay");
     renderTable(defiURL, "#defiBody");
 });
@@ -115,12 +119,12 @@ function renderCoinData(coinID) {
         $("#currentPrice").text("Current Price: $" + response.market_data.current_price.usd.toLocaleString());
 
         // Check if a coin is in the portfolio to adjust portfolio button text
-        var myCoin = new Coin(response.name, response.id);
+        var myCoin = new Coin(response.name, response.id, response.symbol);
         var indX = IndexOfArrayObject(portfolio, "id", myCoin.id);
         if (indX !== -1) {
-            $("#portfolioToggle").text("Remove from Portfolio").attr("class", "block md:inline md:float-right rounded-md");;
+            $("#portfolioToggle").text("Remove from Portfolio").attr("class", "block md:inline md:float-right rounded-md").attr("data-name", response.name).attr("data-coinID", response.id).attr("data-sym", response.symbol);
         } else {
-            $("#portfolioToggle").text("Add to Portfolio").attr("class", "block md:inline md:float-right rounded-md");;
+            $("#portfolioToggle").text("Add to Portfolio").attr("class", "block md:inline md:float-right rounded-md").attr("data-name", response.name).attr("data-coinID", response.id).attr("data-sym", response.symbol);
         }
 
         $("#projectHomepage").text(response.links.homepage[0]).attr("href", response.links.homepage[0]);
@@ -170,6 +174,7 @@ function renderCoinData(coinID) {
     hide("portfolioDisplay");
     hide("defiDisplay");
     hide("topDisplay");
+    hide("pieDisplay");
     reveal("coinDataDisplay");
 }
 
@@ -278,6 +283,7 @@ $("#displayPortfolio").on("click", function(event) {
     hide("coinDataDisplay");
     hide("defiDisplay");
     hide("topDisplay");
+    hide("pieDisplay");
     reveal("portfolioDisplay");
     $("#portBody").empty();
     var portURL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&sparkline=true&price_change_percentage=1h%2C24h%2C7d&ids=";
@@ -305,7 +311,6 @@ function renderTable(url, tableID) {
     $.ajax({url: url, method: "GET"}).then(function(response) {
         for (var i = 0; i < response.length; i++) {
             var tableRow = $("<tr>");
-            var marketRank = $("<td>");
             var dataName = $("<td>");
             var dataPrice = $("<td>");
             var delta1h = $("<td>");
@@ -331,7 +336,6 @@ function renderTable(url, tableID) {
             var myChart = $("<canvas>").attr("id", chartID).attr("style", "width: 240px;");
 
             // Appending lots of things to the table
-            marketRank.text(response[i].market_cap_rank);
             coinImg.attr("src", response[i].image).attr("class", "w-8").attr("style", "margin-right: 1px; display: inline; float: left;");
             var coinBtn = $("<button>").attr("id", response[i].id).attr("class", "text-center mx-auto btn coin-btn rounded-md mb-1").attr("style", "float: left;");
 
@@ -363,7 +367,26 @@ function renderTable(url, tableID) {
             percentColor(response[i].price_change_percentage_24h_in_currency, delta24h);
             percentColor(response[i].price_change_percentage_7d_in_currency, delta7d);
 
-            tableRow.append(marketRank);
+            if (tableID === "#portBody") {
+                const holdings = $("<td>");
+                const scalesButton = $("<button>").attr("class", "scalesButton").attr("data-sym", response[i].symbol);
+                const scales = $("<i>").attr("class", "fas fa-balance-scale w-8");
+                scalesButton.append(scales);
+                holdings.append(scalesButton);
+                tableRow.append(holdings);
+                // not working for the last loaded portfolio item
+                $(".scalesButton").on("click", function(event) {
+                    event.preventDefault();
+                    currencySymbol.innerText = $(this).attr("data-sym").toUpperCase();
+                    modalHeadline.innerText = "Please input how much of this coin you have"
+                    modal.style.display = "block";
+                });
+            } else {
+                var marketRank = $("<td>");
+                marketRank.text(response[i].market_cap_rank);
+                tableRow.append(marketRank);
+            }
+
             tableRow.append(dataName);
             tableRow.append(dataPrice);
             tableRow.append(delta1h);
@@ -463,7 +486,7 @@ $("#portfolioToggle").on("click", function(event) {
     event.preventDefault();
 
     // Generate a coin object to compare to portfolio array
-    var myCoin2 = new Coin($(this).parent().prev().prev().prev().text(), $(this).parent().prev().prev().prev().attr("data-coinID"));
+    var myCoin2 = new Coin($(this).attr("data-name"), $(this).attr("data-coinID"), $(this).attr("data-sym"));
     var indX2 = IndexOfArrayObject(portfolio, "id", myCoin2.id);
 
     // Adjust the portfolio depending on if the coin is already in it or not
@@ -503,7 +526,7 @@ $("#searchButton").on("click", function(event) {
                 userCoin.toLowerCase() === response[i].name) {
             
                 // If we get a match, create new coin object with response data
-                var newCoin = new Coin(response[i].name, response[i].id);
+                var newCoin = new Coin(response[i].name, response[i].id, response[i].symbol);
             
                 // Update this variable to note that the coin is supported
                 coinSupported = true;
@@ -533,10 +556,136 @@ var modal = document.getElementById("modal")
 var closeBtn = document.getElementById("closeModal")
 var modalHeadline = document.getElementById("modalHeadline")
 var modalText = document.getElementById("modalText")
+var currencySymbol = document.getElementById("currencySymbol")
 
 closeBtn.onclick = function() {
+    if ($("#quantity").val().trim() !== "" && parseInt($("#quantity").val().trim()) !== NaN && typeof(parseInt($("#quantity").val().trim())) === "number") {
+        portfolio.forEach(function(portCoin) {
+            if (portCoin.symbol === $("#currencySymbol").text().toLowerCase()) {
+                portCoin["quantity"] = $("#quantity").val().trim();
+                storePortfolio();
+            };
+        });
+    }
     modal.style.display = "none"
 }
+
+const usdTotal = 14088.21;
+
+function pieChart(port) {
+    const coinBaseURL = "https://api.coingecko.com/api/v3/simple/price?ids=";
+    const coinEndURL = "&vs_currencies=usd";
+    let idString = "";
+    
+    port.forEach(coin => {
+        if (coin.hasOwnProperty("quantity")) {
+            idString += coin.id + "%2C";
+            coin["usdValue"] = 0;
+        }
+    });
+    
+    idString = idString.slice(0, -3);
+    const queryURL = coinBaseURL + idString + coinEndURL;
+    
+    $.ajax({url: queryURL, method: "GET"}).then(function(resp) {
+        let usd = 0;
+
+        port.forEach(coin => {
+            if (coin.hasOwnProperty("quantity")) {
+                const apiNav = resp[coin.id];
+                let usdVal = coin.quantity * apiNav.usd;
+                coin.usdValue = usdVal;
+                usd += usdVal;
+            }
+        });
+    
+        usd += usdTotal;
+    
+        const data = [];
+        const labels = [];
+    
+        const usdPercent = (usdTotal/usd)*100;
+    
+        console.log("usd value: " + usd);
+        console.log(`usd: ${usdTotal}
+        %usd: ${usdPercent}`)
+    
+        port.forEach(coin => {
+            if (coin.hasOwnProperty("quantity")) {
+                const portPercent = (coin.usdValue/usd)*100;
+                console.log(`${coin.symbol}: ${coin.quantity}
+                in USD: ${coin.usdValue}
+                %usd: ${portPercent}`);
+                data.push(portPercent);
+                labels.push(coin.symbol.toUpperCase());
+            }
+        });
+    
+        data.push(usdPercent);
+        labels.push('USD');
+    
+        var ctx = document.getElementById('pieChart').getContext('2d');
+        var pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '%',
+                    data: data,
+                    backgroundColor: [
+                        'rgba(0, 0, 255, 1)',
+                        'rgba(255, 0, 0, 1)',
+                        'rgba(0, 255, 0, 1)',
+                        'rgba(238, 130, 238, 1)',
+                        'rgba(255, 165, 0, 1)',
+                        'rgba(0, 240, 232, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 241, 92, 1)'
+                    ],
+                    borderColor: [
+                        'rgba(0, 0, 255, 1)',
+                        'rgba(255, 0, 0, 1)',
+                        'rgba(0, 255, 0, 1)',
+                        'rgba(238, 130, 238, 1)',
+                        'rgba(255, 165, 0, 1)',
+                        'rgba(0, 240, 232, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 241, 92, 1)'                ],
+                    borderWidth: 1
+                }]
+            },
+    /*         options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            } */
+        });
+    });
+}
+
+$("#pie").on("click", function(event) {
+    event.preventDefault();
+    hide("coinDataDisplay");
+    hide("defiDisplay");
+    hide("topDisplay");
+    hide("portfolioDisplay");
+    reveal("pieDisplay");
+    pieChart(portfolio);
+});
 
 // Main page table display rendering
 renderTable(topURL, "#topBody");
